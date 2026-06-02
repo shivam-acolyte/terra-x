@@ -18,7 +18,7 @@ import {
   Building2, Landmark, Network, ArrowRight, Check, X,
   Phone, Mail, Linkedin, ChevronRight, Zap, MapPin,
   Eye, Radio, Wifi, Activity, Target, Rocket,
-  ChevronLeft,
+  ChevronLeft, Quote, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
