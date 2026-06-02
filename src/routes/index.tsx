@@ -169,7 +169,7 @@ function TopBar() {
 /* ------------------------------ HERO ------------------------------ */
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-16">
+    <section id="top" className="relative overflow-hidden pt-24">
       <div className="absolute inset-0 bg-grid opacity-40" />
       <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
       <div className="absolute -left-32 top-32 h-96 w-96 rounded-full bg-[oklch(0.72_0.19_245)] opacity-20 blur-3xl" />
