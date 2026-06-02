@@ -3,10 +3,12 @@ import slideExcavator from "@/assets/slide-excavator.jpg";
 import slideAgri from "@/assets/slide-agri.jpg";
 import slideAmphibious from "@/assets/slide-amphibious.jpg";
 import slideTech from "@/assets/slide-tech.jpg";
+import logo from "@/assets/l2.png"
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
 import terraLogo from "@/assets/terra-x-logo.png.asset.json";
-import rovxLogo from "@/assets/rovx-ai-logo.png.asset.json";
+import rovx from "@/assets/l3.png";
+import r1ovx from "@/assets/l1.png";
 import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
 import { useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -44,7 +46,7 @@ export function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
           <img
-            src={terraLogo.url}
+            src={logo}
             alt="TERRA-X (OPC) Pvt Ltd logo"
             className="h-10 w-auto sm:h-11"
           />
@@ -545,7 +547,7 @@ export function Products() {
       <div className="mt-14 grid gap-8 lg:grid-cols-2">
         <ProductCard
           name="RoVX-AI"
-          logo={rovxLogo.url}
+          logo={rovx}
           subtitle="Engineered for Precision Farming"
           tag="Autonomous Agricultural Vehicle"
           image={rovxImg}
@@ -563,7 +565,7 @@ export function Products() {
         />
         <ProductCard
           name="RAMBO-X"
-          logo={ramboLogo.url}
+          logo={r1ovx}
           subtitle="Built for Land, Water, Rescue & Defense"
           tag="Autonomous Amphibious Excavator"
           image={ramboImg}
@@ -1200,7 +1202,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6 lg:px-8">
         <div>
           <img
-            src={terraLogo.url}
+            src={logo}
             alt="TERRA-X (OPC) Pvt Ltd logo"
             className="h-14 w-auto"
           />
