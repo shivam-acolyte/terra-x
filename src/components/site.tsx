@@ -21,17 +21,20 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 
 
 /* ------------------------------ NAV ------------------------------ */
 export const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#products", label: "Machines" },
-  { href: "#technology", label: "Technology" },
-  { href: "#market", label: "Market" },
-  { href: "#contact", label: "Contact" },
-];
+  { to: "/about", label: "About" },
+  { to: "/products", label: "Machines" },
+  { to: "/technology", label: "Technology" },
+  { to: "/market", label: "Market" },
+  { to: "/strategy", label: "Strategy" },
+  { to: "/founder", label: "Founder" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
 export function Nav() {
   return (
@@ -39,26 +42,32 @@ export function Nav() {
       <TopBar />
       <div className="w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#top" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
+        <Link to="/" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
           <img
             src={terraLogo.url}
             alt="TERRA-X (OPC) Pvt Ltd logo"
             className="h-10 w-auto sm:h-11"
           />
-        </a>
+        </Link>
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-muted-foreground transition hover:text-electric">
+            <Link
+              key={l.to}
+              to={l.to}
+              className="text-sm text-muted-foreground transition hover:text-electric"
+              activeProps={{ className: "text-electric font-semibold" }}
+              activeOptions={{ exact: true }}
+            >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
-        <a
-          href="#contact"
+        <Link
+          to="/contact"
           className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
         >
           Get in touch <ArrowRight className="h-4 w-4" />
-        </a>
+        </Link>
       </div>
       </div>
     </header>
