@@ -758,13 +758,19 @@ function Market() {
       <div className="mt-14 grid items-end gap-6 md:grid-cols-3">
         {tiers.map((t, i) => {
           const widths = ["w-full", "w-[78%]", "w-[55%]"];
+          const tints = [
+            { border: "border-electric/30 hover:border-electric", label: "text-electric", val: "gradient-text" },
+            { border: "border-cyan-brand/30 hover:border-cyan-brand", label: "text-cyan-brand", val: "gradient-text-sunset" },
+            { border: "border-violet-brand/30 hover:border-violet-brand", label: "text-violet-brand", val: "gradient-text-rainbow" },
+          ];
+          const c = tints[i];
           return (
             <div
               key={t.label}
-              className={`relative mx-auto ${widths[i]} rounded-2xl border border-electric/30 bg-gradient-to-br from-card to-background p-8 text-center transition hover:border-electric`}
+              className={`relative mx-auto ${widths[i]} rounded-2xl border ${c.border} bg-gradient-to-br from-card to-background p-8 text-center transition`}
             >
-              <div className="font-mono text-xs uppercase tracking-widest text-electric">{t.label}</div>
-              <div className="mt-4 text-5xl font-black tracking-tight gradient-text">{t.value}</div>
+              <div className={`font-mono text-xs uppercase tracking-widest ${c.label}`}>{t.label}</div>
+              <div className={`mt-4 text-5xl font-black tracking-tight ${c.val}`}>{t.value}</div>
               <p className="mt-3 text-sm text-muted-foreground">{t.body}</p>
             </div>
           );
@@ -789,15 +795,24 @@ function Customers() {
         title={<>Built for <span className="gradient-text-rainbow">High-Need, High-Impact</span> Customers</>}
       />
       <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {items.map((c) => (
-          <div key={c.title} className="rounded-xl border border-border bg-card/40 p-6 transition hover:border-accent hover:-translate-y-1 duration-300">
-            <div className="mb-4 grid h-11 w-11 place-items-center rounded-md bg-accent/10 text-accent">
+        {items.map((c, i) => {
+          const tints = [
+            { tx: "text-emerald-brand", bg: "bg-emerald-brand/10", br: "hover:border-emerald-brand" },
+            { tx: "text-cyan-brand", bg: "bg-cyan-brand/10", br: "hover:border-cyan-brand" },
+            { tx: "text-violet-brand", bg: "bg-violet-brand/10", br: "hover:border-violet-brand" },
+            { tx: "text-magenta-brand", bg: "bg-magenta-brand/10", br: "hover:border-magenta-brand" },
+          ];
+          const t = tints[i % tints.length];
+          return (
+          <div key={c.title} className={`rounded-xl border border-border bg-card/40 p-6 transition ${t.br} hover:-translate-y-1 duration-300`}>
+            <div className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${t.bg} ${t.tx}`}>
               <c.icon className="h-5 w-5" />
             </div>
             <h3 className="text-lg font-bold">{c.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{c.body}</p>
           </div>
-        ))}
+          );
+        })}
       </div>
     </Section>
   );
