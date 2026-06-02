@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero-excavator.jpg";
-import { Hero, About, Solutions, Products, Contact } from "@/components/site";
+import { Hero, About, Solutions, Products, Testimonials, Contact } from "@/components/site";
 import { ArrowRight, Bot, Cpu, Layers, Phone, Sparkles, Target } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -70,6 +70,7 @@ function Index() {
           </div>
         </div>
       </section>
+      <Testimonials />
       <Contact />
     </>
   );
