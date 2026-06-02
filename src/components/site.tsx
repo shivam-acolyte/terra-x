@@ -133,25 +133,25 @@ export function Hero() {
             TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a
-              href="#products"
+            <Link
+              to="/products"
               className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric"
             >
               Explore Our Machines
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#technology"
+            </Link>
+            <Link
+              to="/technology"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-card/50 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-electric hover:text-electric"
             >
               View Technology
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-2 rounded-md border border-accent/40 bg-accent/5 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/10"
             >
               Contact Us
-            </a>
+            </Link>
           </div>
 
           <div className="mt-12 grid w-full max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
