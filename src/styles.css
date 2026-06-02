@@ -70,52 +70,52 @@
   --card-foreground: oklch(0.18 0.012 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.012 250);
-  --primary: oklch(0.48 0.20 255); /* deep electric blue */
-  --primary-foreground: oklch(0.99 0.003 250);
-  --secondary: oklch(0.955 0.008 250);
-  --secondary-foreground: oklch(0.20 0.015 250);
-  --muted: oklch(0.955 0.008 250);
-  --muted-foreground: oklch(0.46 0.018 250);
-  --accent: oklch(0.74 0.16 75); /* safety amber */
-  --accent-foreground: oklch(0.18 0.020 250);
+  --primary: oklch(0.68 0.15 80); /* TERRA-X gold */
+  --primary-foreground: oklch(0.16 0.030 60);
+  --secondary: oklch(0.96 0.012 80);
+  --secondary-foreground: oklch(0.22 0.025 60);
+  --muted: oklch(0.95 0.012 80);
+  --muted-foreground: oklch(0.45 0.020 65);
+  --accent: oklch(0.55 0.22 27); /* RAMBO red accent */
+  --accent-foreground: oklch(0.99 0.003 60);
   --destructive: oklch(0.58 0.24 27);
   --destructive-foreground: oklch(0.99 0.003 250);
-  --border: oklch(0.91 0.008 250);
-  --input: oklch(0.93 0.008 250);
-  --ring: oklch(0.48 0.20 255);
-  --chart-1: oklch(0.72 0.19 245);
-  --chart-2: oklch(0.88 0.18 95);
-  --chart-3: oklch(0.55 0.15 245);
-  --chart-4: oklch(0.45 0.02 250);
-  --chart-5: oklch(0.75 0.12 200);
-  --sidebar: oklch(0.97 0.005 250);
-  --sidebar-foreground: oklch(0.18 0.012 250);
-  --sidebar-primary: oklch(0.55 0.20 250);
-  --sidebar-primary-foreground: oklch(0.99 0.003 250);
-  --sidebar-accent: oklch(0.94 0.008 250);
-  --sidebar-accent-foreground: oklch(0.20 0.012 250);
-  --sidebar-border: oklch(0.88 0.008 250);
-  --sidebar-ring: oklch(0.55 0.20 250);
+  --border: oklch(0.90 0.018 75);
+  --input: oklch(0.93 0.015 75);
+  --ring: oklch(0.68 0.15 80);
+  --chart-1: oklch(0.68 0.15 80);
+  --chart-2: oklch(0.55 0.22 27);
+  --chart-3: oklch(0.78 0.14 85);
+  --chart-4: oklch(0.45 0.05 65);
+  --chart-5: oklch(0.72 0.10 60);
+  --sidebar: oklch(0.97 0.012 80);
+  --sidebar-foreground: oklch(0.18 0.025 60);
+  --sidebar-primary: oklch(0.68 0.15 80);
+  --sidebar-primary-foreground: oklch(0.16 0.030 60);
+  --sidebar-accent: oklch(0.95 0.012 80);
+  --sidebar-accent-foreground: oklch(0.22 0.025 60);
+  --sidebar-border: oklch(0.90 0.018 75);
+  --sidebar-ring: oklch(0.68 0.15 80);
 
   /* Brand tokens */
-  --graphite: oklch(0.32 0.012 250);
-  --metallic: oklch(0.55 0.012 250);
-  --electric: oklch(0.48 0.20 255);
-  --electric-glow: oklch(0.58 0.20 250);
-  --safety: oklch(0.72 0.17 75);
+  --graphite: oklch(0.32 0.020 60);
+  --metallic: oklch(0.55 0.020 70);
+  --electric: oklch(0.62 0.16 70); /* now gold-orange "electric" */
+  --electric-glow: oklch(0.75 0.15 80);
+  --safety: oklch(0.74 0.16 75);
   --gold: oklch(0.72 0.15 80);
   --rambo: oklch(0.55 0.22 27);
 
-  --gradient-hero: radial-gradient(ellipse at 20% 10%, oklch(0.48 0.20 255 / 0.12), transparent 55%), radial-gradient(ellipse at 90% 80%, oklch(0.74 0.16 75 / 0.10), transparent 50%), linear-gradient(180deg, oklch(0.99 0.004 250), oklch(0.96 0.006 250));
-  --gradient-electric: linear-gradient(135deg, oklch(0.48 0.20 255), oklch(0.38 0.20 245));
-  --gradient-accent: linear-gradient(135deg, oklch(0.78 0.16 80), oklch(0.65 0.17 65));
+  --gradient-hero: radial-gradient(ellipse at 20% 10%, oklch(0.78 0.14 85 / 0.20), transparent 55%), radial-gradient(ellipse at 90% 80%, oklch(0.55 0.22 27 / 0.10), transparent 50%), linear-gradient(180deg, oklch(0.99 0.008 80), oklch(0.96 0.012 75));
+  --gradient-electric: linear-gradient(135deg, oklch(0.80 0.15 85), oklch(0.58 0.15 65));
+  --gradient-accent: linear-gradient(135deg, oklch(0.62 0.22 27), oklch(0.45 0.22 25));
   --gradient-gold: linear-gradient(135deg, oklch(0.78 0.14 85), oklch(0.58 0.14 70));
   --gradient-rambo: linear-gradient(135deg, oklch(0.62 0.22 27), oklch(0.45 0.22 25));
-  --shadow-glow: 0 0 40px -8px oklch(0.55 0.20 250 / 0.35);
+  --shadow-glow: 0 0 40px -8px oklch(0.72 0.15 80 / 0.45);
   --shadow-elevated: 0 24px 60px -24px oklch(0.20 0.08 255 / 0.28);
   --shadow-soft: 0 6px 24px -10px oklch(0.20 0.05 250 / 0.12);
 
-  --grid-line: oklch(0.55 0.20 250 / 0.08);
+  --grid-line: oklch(0.62 0.15 75 / 0.10);
 }
 
 .dark {
