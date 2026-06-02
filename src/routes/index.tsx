@@ -107,7 +107,9 @@ const navLinks = [
 
 function Nav() {
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
+    <header className="fixed top-0 z-50 w-full">
+      <TopBar />
+      <div className="w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
           <img
@@ -130,7 +132,36 @@ function Nav() {
           Get in touch <ArrowRight className="h-4 w-4" />
         </a>
       </div>
+      </div>
     </header>
+  );
+}
+
+/* ------------------------------ TOP BAR (PAATI) ------------------------------ */
+function TopBar() {
+  const items = [
+    { icon: Sparkles, text: "Deep-Tech Robotics · Made in India" },
+    { icon: Phone, text: "+91 87147 51947" },
+    { icon: Mail, text: "soorajanil71@gmail.com" },
+    { icon: ShieldCheck, text: "Patent-Linked IP · 2 Platforms" },
+    { icon: Rocket, text: "RoVX-AI · RAMBO-X Now in Pilot" },
+    { icon: MapPin, text: "TERRA-X (OPC) Pvt. Ltd. · India" },
+  ];
+  const loop = [...items, ...items];
+  return (
+    <div className="relative h-8 w-full overflow-hidden bg-gradient-rainbow text-white shadow-[var(--shadow-soft)]">
+      <div className="pointer-events-none absolute inset-0 bg-foreground/10" />
+      <div className="relative flex h-full items-center">
+        <div className="flex shrink-0 animate-marquee gap-10 whitespace-nowrap px-6 text-xs font-medium tracking-wide">
+          {loop.map((it, i) => (
+            <span key={i} className="inline-flex items-center gap-2">
+              <it.icon className="h-3.5 w-3.5" />
+              {it.text}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
