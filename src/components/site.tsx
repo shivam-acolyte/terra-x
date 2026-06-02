@@ -1138,6 +1138,61 @@ export function ContactLink({
   );
 }
 
+/* -------------------------- TESTIMONIALS -------------------------- */
+export function Testimonials() {
+  const items = [
+    {
+      quote:
+        "Terra-X's autonomous excavator concept is a genuine leap for construction. The amphibious capability alone unlocks projects we couldn't bid on before.",
+      name: "Rohit Menon",
+      role: "Head of Operations, Coastal Infrastructure",
+    },
+    {
+      quote:
+        "RoVX-AI mapped our orchard health in hours, not days. The team's depth in AI, robotics and field engineering is rare to find together.",
+      name: "Dr. Anita Rao",
+      role: "Director, AgriTech Research Lab",
+    },
+    {
+      quote:
+        "What stands out is the IP foundation and clarity of vision. Terra-X is building hardware that India and global defense buyers will need.",
+      name: "Vikram Shah",
+      role: "Principal, DeepTech Ventures",
+    },
+  ];
+  return (
+    <Section id="testimonials" className="bg-card/20 border-y border-border">
+      <SectionHeader
+        eyebrow="Testimonials"
+        title={<>Trusted by <span className="gradient-text">Operators, Researchers & Investors</span></>}
+        subtitle="Early signals from the people building, validating, and backing Terra-X."
+      />
+      <div className="mt-12 grid gap-6 md:grid-cols-3">
+        {items.map((t) => (
+          <figure
+            key={t.name}
+            className="group relative flex h-full flex-col rounded-2xl border border-border bg-background/60 p-6 transition hover:border-electric hover:-translate-y-1 duration-300"
+          >
+            <Quote className="h-8 w-8 text-electric/70" />
+            <div className="mt-3 flex gap-0.5 text-electric">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-current" />
+              ))}
+            </div>
+            <blockquote className="mt-4 text-sm leading-relaxed text-foreground/90">
+              "{t.quote}"
+            </blockquote>
+            <figcaption className="mt-6 border-t border-border pt-4">
+              <div className="text-sm font-semibold">{t.name}</div>
+              <div className="text-xs text-muted-foreground">{t.role}</div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 /* ---------------------------- FOOTER ---------------------------- */
 export function Footer() {
   return (
