@@ -170,12 +170,13 @@ function TopBar() {
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden pt-24">
-      <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-      <div className="absolute -left-32 top-32 h-96 w-96 rounded-full bg-[oklch(0.72_0.19_245)] opacity-20 blur-3xl" />
-      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-[oklch(0.55_0.18_230)] opacity-20 blur-3xl" />
+      {/* Full-width banner slider */}
+      <HeroBanner />
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-32 lg:px-8">
+      <div className="absolute inset-0 -z-10 bg-grid opacity-40" />
+      <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
+
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28 lg:px-8">
         <div className="flex flex-col justify-center">
           <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
             <span className="relative flex h-2 w-2">
@@ -226,6 +227,80 @@ function Hero() {
         <HeroSlider />
       </div>
     </section>
+  );
+}
+
+/* ------------------------------ HERO BANNER ------------------------------ */
+function HeroBanner() {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [Autoplay({ delay: 5000, stopOnInteraction: false })],
+  );
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => { emblaApi.off("select", onSelect); };
+  }, [emblaApi]);
+
+  return (
+    <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div ref={emblaRef} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)]">
+        <div className="flex">
+          {slides.map((s, i) => (
+            <div key={s.title} className="relative min-w-0 flex-[0_0_100%]">
+              <img
+                src={s.img}
+                alt={s.title}
+                width={1920}
+                height={640}
+                loading={i === 0 ? "eager" : "lazy"}
+                className="h-[220px] w-full object-cover sm:h-[300px] lg:h-[380px]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
+              <div className="absolute inset-y-0 left-0 flex max-w-2xl flex-col justify-center gap-2 p-6 text-background sm:p-10 lg:p-14">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {s.tag}
+                </span>
+                <h2 className="text-2xl font-black tracking-tight sm:text-4xl lg:text-5xl">{s.title}</h2>
+                <p className="max-w-lg text-sm text-background/85 sm:text-base">{s.caption}</p>
+              </div>
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent animate-scan" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        aria-label="Previous banner"
+        onClick={() => emblaApi?.scrollPrev()}
+        className="absolute left-6 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:left-12"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <button
+        type="button"
+        aria-label="Next banner"
+        onClick={() => emblaApi?.scrollNext()}
+        className="absolute right-6 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:right-12"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        {slides.map((s, i) => (
+          <button
+            key={s.title}
+            type="button"
+            aria-label={`Banner ${i + 1}`}
+            onClick={() => emblaApi?.scrollTo(i)}
+            className={`h-2 rounded-full transition-all ${selected === i ? "w-8 bg-primary" : "w-2 bg-border hover:bg-muted-foreground/50"}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
