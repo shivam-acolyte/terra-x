@@ -107,15 +107,29 @@
   --rambo: oklch(0.55 0.22 27);
 
   --gradient-hero: radial-gradient(ellipse at 20% 10%, oklch(0.78 0.14 85 / 0.20), transparent 55%), radial-gradient(ellipse at 90% 80%, oklch(0.55 0.22 27 / 0.10), transparent 50%), linear-gradient(180deg, oklch(0.99 0.008 80), oklch(0.96 0.012 75));
-  --gradient-electric: linear-gradient(135deg, oklch(0.80 0.15 85), oklch(0.58 0.15 65));
-  --gradient-accent: linear-gradient(135deg, oklch(0.62 0.22 27), oklch(0.45 0.22 25));
-  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.14 85), oklch(0.58 0.14 70));
-  --gradient-rambo: linear-gradient(135deg, oklch(0.62 0.22 27), oklch(0.45 0.22 25));
+  --gradient-electric: linear-gradient(135deg, oklch(0.80 0.15 85), oklch(0.62 0.18 50));
+  --gradient-accent: linear-gradient(135deg, oklch(0.62 0.22 27), oklch(0.55 0.22 340));
+  --gradient-gold: linear-gradient(135deg, oklch(0.80 0.16 90), oklch(0.60 0.18 55));
+  --gradient-rambo: linear-gradient(135deg, oklch(0.65 0.22 25), oklch(0.55 0.22 350));
+  --gradient-cyan: linear-gradient(135deg, oklch(0.78 0.14 200), oklch(0.55 0.18 240));
+  --gradient-violet: linear-gradient(135deg, oklch(0.70 0.20 300), oklch(0.55 0.22 270));
+  --gradient-emerald: linear-gradient(135deg, oklch(0.78 0.16 160), oklch(0.55 0.18 180));
+  --gradient-sunset: linear-gradient(135deg, oklch(0.80 0.18 70), oklch(0.62 0.22 20), oklch(0.55 0.22 340));
+  --gradient-rainbow: linear-gradient(120deg, oklch(0.72 0.18 30), oklch(0.78 0.16 80), oklch(0.72 0.18 160), oklch(0.65 0.20 230), oklch(0.65 0.22 300));
   --shadow-glow: 0 0 40px -8px oklch(0.72 0.15 80 / 0.45);
   --shadow-elevated: 0 24px 60px -24px oklch(0.20 0.08 255 / 0.28);
   --shadow-soft: 0 6px 24px -10px oklch(0.20 0.05 250 / 0.12);
 
   --grid-line: oklch(0.62 0.15 75 / 0.10);
+
+  /* Vibrant section accents */
+  --c-cyan: oklch(0.68 0.16 220);
+  --c-teal: oklch(0.68 0.14 190);
+  --c-emerald: oklch(0.65 0.16 160);
+  --c-violet: oklch(0.62 0.20 290);
+  --c-magenta: oklch(0.62 0.22 340);
+  --c-orange: oklch(0.70 0.18 50);
+  --c-yellow: oklch(0.82 0.16 95);
 }
 
 .dark {
@@ -177,8 +191,36 @@
 @layer utilities {
   .text-electric { color: var(--electric); }
   .text-safety { color: var(--safety); }
+  .text-cyan-brand { color: var(--c-cyan); }
+  .text-violet-brand { color: var(--c-violet); }
+  .text-emerald-brand { color: var(--c-emerald); }
+  .text-magenta-brand { color: var(--c-magenta); }
   .bg-graphite { background-color: var(--graphite); }
   .bg-metallic { background-color: var(--metallic); }
+  .bg-cyan-brand { background-color: var(--c-cyan); }
+  .bg-violet-brand { background-color: var(--c-violet); }
+  .bg-emerald-brand { background-color: var(--c-emerald); }
+  .bg-magenta-brand { background-color: var(--c-magenta); }
+  .bg-orange-brand { background-color: var(--c-orange); }
+  .bg-gradient-cyan { background-image: var(--gradient-cyan); }
+  .bg-gradient-violet { background-image: var(--gradient-violet); }
+  .bg-gradient-emerald { background-image: var(--gradient-emerald); }
+  .bg-gradient-sunset { background-image: var(--gradient-sunset); }
+  .bg-gradient-rainbow { background-image: var(--gradient-rainbow); }
+  .bg-gradient-gold { background-image: var(--gradient-gold); }
+  .bg-gradient-rambo { background-image: var(--gradient-rambo); }
+  .gradient-text-rainbow {
+    background: var(--gradient-rainbow);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .gradient-text-sunset {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   .bg-grid {
     background-image:
       linear-gradient(var(--grid-line) 1px, transparent 1px),
