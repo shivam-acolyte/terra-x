@@ -224,7 +224,6 @@ function Hero() {
           </div>
         </div>
 
-        <HeroSlider />
       </div>
     </section>
   );
