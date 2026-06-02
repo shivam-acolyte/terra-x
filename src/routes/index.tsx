@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import heroImg from "@/assets/hero-excavator.jpg";
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
+import terraLogo from "@/assets/terra-x-logo.png.asset.json";
+import rovxLogo from "@/assets/rovx-ai-logo.png.asset.json";
+import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
 import {
   Brain, Radar, Cpu, Bot, Smartphone, RefreshCw,
   Tractor, Waves, Layers, ShieldCheck, Sparkles,
@@ -60,7 +63,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="dark min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main>
         <Hero />
@@ -98,9 +101,12 @@ function Nav() {
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#top" className="flex items-center gap-2 font-bold tracking-tight">
-          <Logo />
-          <span className="text-base sm:text-lg">TERRA-X</span>
+        <a href="#top" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
+          <img
+            src={terraLogo.url}
+            alt="TERRA-X (OPC) Pvt Ltd logo"
+            className="h-10 w-auto sm:h-11"
+          />
         </a>
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((l) => (
@@ -120,14 +126,6 @@ function Nav() {
   );
 }
 
-function Logo() {
-  return (
-    <div className="relative grid h-8 w-8 place-items-center rounded-md bg-gradient-to-br from-[oklch(0.72_0.19_245)] to-[oklch(0.45_0.18_240)] glow-electric">
-      <div className="absolute inset-[3px] rounded-sm bg-background" />
-      <span className="relative text-xs font-black text-electric">TX</span>
-    </div>
-  );
-}
 
 /* ------------------------------ HERO ------------------------------ */
 function Hero() {
@@ -406,6 +404,7 @@ function Products() {
       <div className="mt-14 grid gap-8 lg:grid-cols-2">
         <ProductCard
           name="RoVX-AI"
+          logo={rovxLogo.url}
           subtitle="Engineered for Precision Farming"
           tag="Autonomous Agricultural Vehicle"
           image={rovxImg}
@@ -419,10 +418,11 @@ function Products() {
             "Remote and app-based control",
           ]}
           note='Design representation filed for "Autonomous Agricultural Vehicle for Plant Health Assessment and Fertilizer Application".'
-          accent="electric"
+          accent="gold"
         />
         <ProductCard
           name="RAMBO-X"
+          logo={ramboLogo.url}
           subtitle="Built for Land, Water, Rescue & Defense"
           tag="Autonomous Amphibious Excavator"
           image={ramboImg}
@@ -436,7 +436,7 @@ function Products() {
             "Remote control and AI-assisted operation",
           ]}
           note='Design representation filed for "Autonomous Excavator for Land and Amphibious Operations".'
-          accent="safety"
+          accent="rambo"
         />
       </div>
     </Section>
@@ -444,14 +444,40 @@ function Products() {
 }
 
 function ProductCard({
-  name, subtitle, tag, image, description, features, note, accent,
+  name, logo, subtitle, tag, image, description, features, note, accent,
 }: {
-  name: string; subtitle: string; tag: string; image: string;
-  description: string; features: string[]; note: string; accent: "electric" | "safety";
+  name: string; logo: string; subtitle: string; tag: string; image: string;
+  description: string; features: string[]; note: string; accent: "gold" | "rambo";
 }) {
-  const isE = accent === "electric";
+  const isGold = accent === "gold";
+  const theme = isGold
+    ? {
+        border: "border-[oklch(0.72_0.15_80)]/40",
+        ring: "ring-[oklch(0.72_0.15_80)]/30",
+        bg: "bg-[oklch(0.98_0.04_85)]",
+        chip: "bg-[oklch(0.95_0.06_85)] text-[oklch(0.40_0.10_70)] border-[oklch(0.72_0.15_80)]/50",
+        text: "text-[oklch(0.45_0.12_70)]",
+        check: "text-[oklch(0.55_0.13_70)]",
+        gradient: "from-[oklch(0.95_0.08_85)] via-background to-[oklch(0.97_0.05_80)]",
+      }
+    : {
+        border: "border-[oklch(0.55_0.22_27)]/40",
+        ring: "ring-[oklch(0.55_0.22_27)]/30",
+        bg: "bg-[oklch(0.98_0.03_27)]",
+        chip: "bg-[oklch(0.95_0.06_27)] text-[oklch(0.45_0.20_27)] border-[oklch(0.55_0.22_27)]/50",
+        text: "text-[oklch(0.50_0.22_27)]",
+        check: "text-[oklch(0.55_0.22_27)]",
+        gradient: "from-[oklch(0.96_0.06_27)] via-background to-[oklch(0.98_0.04_27)]",
+      };
   return (
-    <article className={`group relative overflow-hidden rounded-2xl border ${isE ? "border-electric/30" : "border-accent/30"} bg-background/60 transition hover:shadow-[var(--shadow-elevated)]`}>
+    <article className={`group relative overflow-hidden rounded-2xl border ${theme.border} bg-gradient-to-br ${theme.gradient} transition hover:shadow-[var(--shadow-elevated)]`}>
+      <div className={`flex items-center justify-center border-b ${theme.border} ${theme.bg} px-6 py-6`}>
+        <img
+          src={logo}
+          alt={`${name} logo`}
+          className="h-16 w-auto sm:h-20 object-contain drop-shadow-md"
+        />
+      </div>
       <div className="relative aspect-[16/10] overflow-hidden">
         <img
           src={image}
@@ -461,9 +487,9 @@ function ProductCard({
           loading="lazy"
           className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
-          <span className={`rounded-md ${isE ? "bg-electric/20 text-electric border-electric/40" : "bg-accent/20 text-accent border-accent/40"} border px-2 py-1 text-[10px] font-mono uppercase tracking-widest`}>
+          <span className={`rounded-md ${theme.chip} border px-2 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur`}>
             {tag}
           </span>
         </div>
@@ -471,13 +497,13 @@ function ProductCard({
       <div className="p-6 sm:p-8">
         <div className="flex items-baseline gap-3">
           <h3 className="text-3xl font-black tracking-tight">{name}</h3>
-          <span className={`text-xs font-mono uppercase ${isE ? "text-electric" : "text-accent"}`}>{subtitle}</span>
+          <span className={`text-xs font-mono uppercase ${theme.text}`}>{subtitle}</span>
         </div>
         <p className="mt-3 text-sm text-muted-foreground">{description}</p>
         <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
           {features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm">
-              <Check className={`mt-0.5 h-4 w-4 shrink-0 ${isE ? "text-electric" : "text-accent"}`} />
+              <Check className={`mt-0.5 h-4 w-4 shrink-0 ${theme.check}`} />
               <span>{f}</span>
             </li>
           ))}
@@ -951,10 +977,11 @@ function Footer() {
     <footer className="border-t border-border bg-background">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6 lg:px-8">
         <div>
-          <div className="flex items-center gap-2">
-            <Logo />
-            <span className="text-base font-bold">TERRA-X (OPC) PRIVATE LIMITED</span>
-          </div>
+          <img
+            src={terraLogo.url}
+            alt="TERRA-X (OPC) Pvt Ltd logo"
+            className="h-14 w-auto"
+          />
           <p className="mt-2 max-w-md text-sm text-muted-foreground">
             Reinventing heavy machinery with autonomous intelligence — for agriculture, construction, rescue, and defense.
           </p>
