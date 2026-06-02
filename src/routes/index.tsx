@@ -19,6 +19,7 @@ import {
   Building2, Landmark, Network, ArrowRight, Check, X,
   Phone, Mail, Linkedin, ChevronRight, Zap, MapPin,
   Eye, Radio, Wifi, Activity, Target, Rocket,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -279,14 +280,34 @@ function HeroSlider() {
       </div>
 
       {/* Dots */}
-      <div className="mt-4 flex items-center justify-center gap-2">
+      {/* Prev / Next controls */}
+      <button
+        type="button"
+        aria-label="Previous slide"
+        onClick={() => emblaApi?.scrollPrev()}
+        className="absolute left-3 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <button
+        type="button"
+        aria-label="Next slide"
+        onClick={() => emblaApi?.scrollNext()}
+        className="absolute right-3 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+
+      {/* Pagination dots */}
+      <div className="mt-5 flex items-center justify-center gap-2">
         {slides.map((s, i) => (
           <button
             key={s.title}
             type="button"
             aria-label={`Go to slide ${i + 1}`}
+            aria-current={selected === i}
             onClick={() => emblaApi?.scrollTo(i)}
-            className={`h-1.5 rounded-full transition-all ${selected === i ? "w-8 bg-primary" : "w-3 bg-border hover:bg-muted-foreground/50"}`}
+            className={`h-2 rounded-full transition-all ${selected === i ? "w-8 bg-primary" : "w-2 bg-border hover:bg-muted-foreground/50"}`}
           />
         ))}
       </div>
