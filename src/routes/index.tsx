@@ -752,7 +752,7 @@ function Market() {
     <Section id="market" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Market Opportunity"
-        title={<>A Large Opportunity Across <span className="gradient-text">Agriculture, Construction & Automation</span></>}
+        title={<>A Large Opportunity Across <span className="gradient-text-sunset">Agriculture, Construction & Automation</span></>}
         subtitle="TERRA-X operates at the intersection of precision agriculture, construction equipment, autonomous machinery, and industrial robotics — addressing labor shortages, safety risks, climate disasters, and the need for precision automation."
       />
       <div className="mt-14 grid items-end gap-6 md:grid-cols-3">
@@ -786,7 +786,7 @@ function Customers() {
     <Section id="customers">
       <SectionHeader
         eyebrow="Target Customers"
-        title={<>Built for <span className="gradient-text">High-Need, High-Impact</span> Customers</>}
+        title={<>Built for <span className="gradient-text-rainbow">High-Need, High-Impact</span> Customers</>}
       />
       <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {items.map((c) => (
@@ -816,7 +816,7 @@ function Business() {
     <Section id="business" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Business Model"
-        title={<>Multiple Revenue Streams for <span className="gradient-text">Scalable Growth</span></>}
+        title={<>Multiple Revenue Streams for <span className="gradient-text-sunset">Scalable Growth</span></>}
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((b, i) => (
@@ -918,7 +918,7 @@ function Competitive() {
     <Section id="competitive">
       <SectionHeader
         eyebrow="Competitive Landscape"
-        title={<>Our <span className="gradient-text">Competitive Advantage</span></>}
+        title={<>Our <span className="gradient-text-rainbow">Competitive Advantage</span></>}
       />
       <div className="mt-14 overflow-x-auto rounded-2xl border border-border bg-card/40">
         <table className="w-full min-w-[720px] text-left text-sm">
