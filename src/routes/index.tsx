@@ -677,21 +677,32 @@ function TechStack() {
     <Section id="technology" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Technology Stack"
-        title={<>Technology Built Into <span className="gradient-text">Every Machine</span></>}
+        title={<>Technology Built Into <span className="gradient-text-rainbow">Every Machine</span></>}
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((t) => (
-          <div key={t.title} className="group relative overflow-hidden rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric">
-            <div className="absolute right-0 top-0 h-32 w-32 -translate-y-1/2 translate-x-1/2 rounded-full bg-electric/10 opacity-0 blur-2xl transition group-hover:opacity-100" />
+        {items.map((t, i) => {
+          const palette = [
+            { tx: "text-electric", bg: "bg-electric/10", ring: "ring-electric/30", blob: "bg-electric/20" },
+            { tx: "text-cyan-brand", bg: "bg-cyan-brand/10", ring: "ring-cyan-brand/30", blob: "bg-cyan-brand/20" },
+            { tx: "text-violet-brand", bg: "bg-violet-brand/10", ring: "ring-violet-brand/30", blob: "bg-violet-brand/20" },
+            { tx: "text-emerald-brand", bg: "bg-emerald-brand/10", ring: "ring-emerald-brand/30", blob: "bg-emerald-brand/20" },
+            { tx: "text-magenta-brand", bg: "bg-magenta-brand/10", ring: "ring-magenta-brand/30", blob: "bg-magenta-brand/20" },
+            { tx: "text-accent", bg: "bg-accent/10", ring: "ring-accent/30", blob: "bg-accent/20" },
+          ];
+          const p = palette[i % palette.length];
+          return (
+          <div key={t.title} className={`group relative overflow-hidden rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric`}>
+            <div className={`absolute right-0 top-0 h-32 w-32 -translate-y-1/2 translate-x-1/2 rounded-full ${p.blob} opacity-0 blur-2xl transition group-hover:opacity-100`} />
             <div className="relative">
-              <div className="mb-4 grid h-11 w-11 place-items-center rounded-md bg-electric/10 text-electric ring-1 ring-electric/30">
+              <div className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${p.bg} ${p.tx} ring-1 ${p.ring}`}>
                 <t.icon className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-bold">{t.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t.body}</p>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </Section>
   );
