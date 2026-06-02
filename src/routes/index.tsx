@@ -176,9 +176,9 @@ function Hero() {
       <div className="absolute inset-0 -z-10 bg-grid opacity-40" />
       <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28 lg:px-8">
-        <div className="flex flex-col justify-center">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
+      <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:py-24 lg:px-8">
+        <div className="flex flex-col items-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-electric opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-electric" />
@@ -195,7 +195,7 @@ function Hero() {
           <p className="mt-4 max-w-xl text-base text-muted-foreground/80">
             TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
               href="#products"
               className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric"
@@ -217,7 +217,7 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-8">
+          <div className="mt-12 grid w-full max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
             <Stat label="Machine Platforms" value="2" />
             <Stat label="Novel Features" value="15+" />
             <Stat label="Patent-Linked IP" value="2" />
