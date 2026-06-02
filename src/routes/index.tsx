@@ -176,9 +176,9 @@ function Hero() {
       <div className="absolute inset-0 -z-10 bg-grid opacity-40" />
       <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28 lg:px-8">
-        <div className="flex flex-col justify-center">
-          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
+      <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:py-24 lg:px-8">
+        <div className="flex flex-col items-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-electric opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-electric" />
@@ -195,7 +195,7 @@ function Hero() {
           <p className="mt-4 max-w-xl text-base text-muted-foreground/80">
             TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
               href="#products"
               className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric"
@@ -217,14 +217,13 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-8">
+          <div className="mt-12 grid w-full max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
             <Stat label="Machine Platforms" value="2" />
             <Stat label="Novel Features" value="15+" />
             <Stat label="Patent-Linked IP" value="2" />
           </div>
         </div>
 
-        <HeroSlider />
       </div>
     </section>
   );
@@ -247,8 +246,8 @@ function HeroBanner() {
   }, [emblaApi]);
 
   return (
-    <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div ref={emblaRef} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)]">
+    <div className="relative w-full">
+      <div ref={emblaRef} className="overflow-hidden border-y border-border bg-card shadow-[var(--shadow-elevated)]">
         <div className="flex">
           {slides.map((s, i) => (
             <div key={s.title} className="relative min-w-0 flex-[0_0_100%]">
@@ -256,17 +255,17 @@ function HeroBanner() {
                 src={s.img}
                 alt={s.title}
                 width={1920}
-                height={640}
+                height={1080}
                 loading={i === 0 ? "eager" : "lazy"}
-                className="h-[220px] w-full object-cover sm:h-[300px] lg:h-[380px]"
+                className="h-[60vh] min-h-[360px] w-full object-cover sm:h-[70vh] lg:h-[85vh]"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
-              <div className="absolute inset-y-0 left-0 flex max-w-2xl flex-col justify-center gap-2 p-6 text-background sm:p-10 lg:p-14">
+              <div className="absolute inset-y-0 left-0 flex max-w-3xl flex-col justify-center gap-3 p-6 text-background sm:p-12 lg:p-20">
                 <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {s.tag}
                 </span>
-                <h2 className="text-2xl font-black tracking-tight sm:text-4xl lg:text-5xl">{s.title}</h2>
-                <p className="max-w-lg text-sm text-background/85 sm:text-base">{s.caption}</p>
+                <h2 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">{s.title}</h2>
+                <p className="max-w-xl text-base text-background/85 sm:text-lg">{s.caption}</p>
               </div>
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent animate-scan" />
             </div>
@@ -277,26 +276,26 @@ function HeroBanner() {
         type="button"
         aria-label="Previous banner"
         onClick={() => emblaApi?.scrollPrev()}
-        className="absolute left-6 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:left-12"
+        className="absolute left-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:left-8"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-6 w-6" />
       </button>
       <button
         type="button"
         aria-label="Next banner"
         onClick={() => emblaApi?.scrollNext()}
-        className="absolute right-6 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:right-12"
+        className="absolute right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-border bg-background/80 text-foreground shadow-[var(--shadow-soft)] backdrop-blur transition hover:bg-primary hover:text-primary-foreground hover:border-primary lg:right-8"
       >
-        <ChevronRight className="h-5 w-5" />
+        <ChevronRight className="h-6 w-6" />
       </button>
-      <div className="mt-4 flex items-center justify-center gap-2">
+      <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-2">
         {slides.map((s, i) => (
           <button
             key={s.title}
             type="button"
             aria-label={`Banner ${i + 1}`}
             onClick={() => emblaApi?.scrollTo(i)}
-            className={`h-2 rounded-full transition-all ${selected === i ? "w-8 bg-primary" : "w-2 bg-border hover:bg-muted-foreground/50"}`}
+            className={`h-2 rounded-full transition-all ${selected === i ? "w-10 bg-primary" : "w-2 bg-white/60 hover:bg-white"}`}
           />
         ))}
       </div>
