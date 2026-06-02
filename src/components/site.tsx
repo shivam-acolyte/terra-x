@@ -86,8 +86,7 @@ export function TopBar() {
   ];
   const loop = [...items, ...items];
   return (
-    <div className="relative h-8 w-full overflow-hidden bg-gradient-rainbow text-white shadow-[var(--shadow-soft)]">
-      <div className="pointer-events-none absolute inset-0 bg-foreground/10" />
+    <div className="relative h-8 w-full overflow-hidden bg-primary text-primary-foreground shadow-[var(--shadow-soft)]">
       <div className="relative flex h-full items-center">
         <div className="flex shrink-0 animate-marquee gap-10 whitespace-nowrap px-6 text-xs font-medium tracking-wide">
           {loop.map((it, i) => (
