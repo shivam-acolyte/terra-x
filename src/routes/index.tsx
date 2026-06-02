@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import heroImg from "@/assets/hero-excavator.jpg";
+import slideExcavator from "@/assets/slide-excavator.jpg";
+import slideAgri from "@/assets/slide-agri.jpg";
+import slideAmphibious from "@/assets/slide-amphibious.jpg";
+import slideTech from "@/assets/slide-tech.jpg";
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
 import terraLogo from "@/assets/terra-x-logo.png.asset.json";
 import rovxLogo from "@/assets/rovx-ai-logo.png.asset.json";
 import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
+import { useEffect, useRef, useState } from "react";
+import Autoplay from "embla-carousel-autoplay";
+import useEmblaCarousel from "embla-carousel-react";
 import {
   Brain, Radar, Cpu, Bot, Smartphone, RefreshCw,
   Tractor, Waves, Layers, ShieldCheck, Sparkles,
