@@ -191,47 +191,119 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-card/30 shadow-[var(--shadow-elevated)]">
-            <img
-              src={heroImg}
-              alt="TERRA-X autonomous excavator with LiDAR sensors and AI interface overlay"
-              width={1920}
-              height={1280}
-              className="aspect-[3/2] w-full object-cover"
-            />
-            {/* LiDAR scan line */}
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent animate-scan" />
-            </div>
-            {/* HUD corners */}
-            {["top-3 left-3 border-l-2 border-t-2", "top-3 right-3 border-r-2 border-t-2",
-              "bottom-3 left-3 border-l-2 border-b-2", "bottom-3 right-3 border-r-2 border-b-2"].map((p) => (
-              <div key={p} className={`absolute h-5 w-5 border-electric ${p}`} />
-            ))}
-            {/* Telemetry chips */}
-            <div className="absolute left-4 top-4 flex items-center gap-1.5 rounded-md border border-electric/40 bg-background/70 px-2 py-1 text-[10px] font-mono uppercase text-electric backdrop-blur">
-              <Activity className="h-3 w-3" /> Autonomy Active
-            </div>
-            <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-md border border-accent/40 bg-background/70 px-2 py-1 text-[10px] font-mono uppercase text-accent backdrop-blur">
-              <Radar className="h-3 w-3" /> LiDAR 360°
-            </div>
-          </div>
+        <HeroSlider />
+      </div>
+    </section>
+  );
+}
 
-          <div className="absolute -bottom-6 -left-6 hidden rounded-xl border border-border bg-card/90 p-4 backdrop-blur sm:block">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-md bg-accent/20 text-accent">
-                <Brain className="h-5 w-5" />
+/* ------------------------------ HERO SLIDER ------------------------------ */
+const slides = [
+  {
+    img: slideExcavator,
+    tag: "Autonomous Construction",
+    title: "AI-Driven Excavation",
+    caption: "LiDAR-guided digging, mapping & navigation at sub-centimeter precision.",
+  },
+  {
+    img: slideAgri,
+    tag: "Precision Agriculture",
+    title: "RoVX-AI Orchard Rover",
+    caption: "Tree-level health detection and robotic fertilizer dosing.",
+  },
+  {
+    img: slideAmphibious,
+    tag: "Defense & Rescue",
+    title: "RAMBO-X Amphibious",
+    caption: "Land + water operations for flood rescue and tactical deployment.",
+  },
+  {
+    img: slideTech,
+    tag: "Smart Sensor Stack",
+    title: "LiDAR · AI · IoT",
+    caption: "Multi-modal perception built for the harshest environments.",
+  },
+];
+
+function HeroSlider() {
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [Autoplay({ delay: 4500, stopOnInteraction: false })],
+  );
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi]);
+
+  return (
+    <div className="relative">
+      <div
+        ref={emblaRef}
+        className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)]"
+      >
+        <div className="flex">
+          {slides.map((s, i) => (
+            <div key={s.title} className="relative min-w-0 flex-[0_0_100%]">
+              <img
+                src={s.img}
+                alt={s.title}
+                width={1600}
+                height={1024}
+                loading={i === 0 ? "eager" : "lazy"}
+                className="aspect-[16/10] w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/30 to-transparent" />
+              {/* HUD corners */}
+              {["top-3 left-3 border-l-2 border-t-2", "top-3 right-3 border-r-2 border-t-2",
+                "bottom-3 left-3 border-l-2 border-b-2", "bottom-3 right-3 border-r-2 border-b-2"].map((p) => (
+                <div key={p} className={`absolute h-5 w-5 border-electric ${p}`} />
+              ))}
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 text-background">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {s.tag}
+                </span>
+                <h3 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">{s.title}</h3>
+                <p className="mt-1.5 max-w-md text-sm text-background/80">{s.caption}</p>
               </div>
-              <div>
-                <div className="text-xs uppercase text-muted-foreground">AI Decision Engine</div>
-                <div className="font-mono text-sm text-foreground">12.4ms · 99.7% acc</div>
-              </div>
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent animate-scan" />
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="mt-4 flex items-center justify-center gap-2">
+        {slides.map((s, i) => (
+          <button
+            key={s.title}
+            type="button"
+            aria-label={`Go to slide ${i + 1}`}
+            onClick={() => emblaApi?.scrollTo(i)}
+            className={`h-1.5 rounded-full transition-all ${selected === i ? "w-8 bg-primary" : "w-3 bg-border hover:bg-muted-foreground/50"}`}
+          />
+        ))}
+      </div>
+
+      {/* Floating telemetry card */}
+      <div className="absolute -bottom-8 -left-4 hidden rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:block">
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-md bg-primary/10 text-primary">
+            <Brain className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xs uppercase text-muted-foreground">AI Decision Engine</div>
+            <div className="font-mono text-sm text-foreground">12.4ms · 99.7% acc</div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
