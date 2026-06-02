@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import heroImg from "@/assets/hero-excavator.jpg";
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
+import terraLogo from "@/assets/terra-x-logo.png.asset.json";
+import rovxLogo from "@/assets/rovx-ai-logo.png.asset.json";
+import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
 import {
   Brain, Radar, Cpu, Bot, Smartphone, RefreshCw,
   Tractor, Waves, Layers, ShieldCheck, Sparkles,
@@ -60,7 +63,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="dark min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main>
         <Hero />
