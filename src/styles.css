@@ -177,6 +177,11 @@
     color: var(--color-foreground);
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
+    font-family: "Times New Roman", Times, serif;
+  }
+
+  html, button, input, select, textarea {
+    font-family: "Times New Roman", Times, serif;
   }
 
   html {
