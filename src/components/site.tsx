@@ -630,7 +630,7 @@ export function ProductCard({
           loading="lazy"
           className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
           <span className={`rounded-md ${theme.chip} border px-2 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur`}>
             {tag}
@@ -1060,7 +1060,7 @@ export function Founder() {
         </div>
         <div>
           <p className="text-lg text-foreground/90 leading-relaxed">
-            <span className="font-semibold text-foreground">Sooraj Anil</span>is the founder CEO & Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced machine concepts into the protected intellectual property. He has been multi round finalist in the IIT palakad DISHA  program and brings a rare combination of technical rigor , disruptive thinking, abd deep interest in industrial innovation.
+            <span className="font-semibold text-foreground">Sooraj Anil</span> is the founder CEO & Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced machine concepts into the protected intellectual property. He has been multi round finalist in the IIT palakad DISHA  program and brings a rare combination of technical rigor , disruptive thinking, deep interest in industrial innovation.
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {points.map((p) => (
@@ -1097,19 +1097,19 @@ export function Contact() {
           </p>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            <ContactLink icon={Phone} label="Phone" value="+91 87147 51947" href="tel:+918714751947" />
-            <ContactLink icon={Mail} label="Email" value="soorajanil71@gmail.com" href="mailto:soorajanil71@gmail.com" />
+            <ContactLink icon={Phone} label="Phone" value="+91 6282451947" href="tel:+916282451947" />
+            <ContactLink icon={Mail} label="Email" value="txarmoured@gmail.com" href="mailto:txarmoured@gmail.com" />
             <ContactLink icon={Linkedin} label="LinkedIn" value="Sooraj Anil" href="https://www.linkedin.com/in/sooraj-anil-43a9872b8" />
           </div>
 
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <a href="mailto:soorajanil71@gmail.com" className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric">
+            <a href="mailto:txarmoured@gmail.com" className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric">
               Contact Founder <ArrowRight className="h-4 w-4" />
             </a>
-            <a href="mailto:soorajanil71@gmail.com?subject=Partnership%20Inquiry" className="inline-flex items-center gap-2 rounded-md border border-accent/50 bg-accent/10 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/20">
+            <a href="mailto:txarmoured@gmail.com?subject=Partnership%20Inquiry" className="inline-flex items-center gap-2 rounded-md border border-accent/50 bg-accent/10 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/20">
               Request Partnership
             </a>
-            <a href="mailto:soorajanil71@gmail.com?subject=Pilot%20Deployment" className="inline-flex items-center gap-2 rounded-md border border-border bg-card/60 px-6 py-3 text-sm font-semibold transition hover:border-electric hover:text-electric">
+            <a href="mailto:txarmoured@gmail.com?subject=Pilot%20Deployment" className="inline-flex items-center gap-2 rounded-md border border-border bg-card/60 px-6 py-3 text-sm font-semibold transition hover:border-electric hover:text-electric">
               Discuss Pilot Deployment
             </a>
           </div>
