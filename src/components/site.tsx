@@ -1087,7 +1087,7 @@ export function Contact() {
 
         <div className="relative mx-auto max-w-3xl text-center">
           <div className="mb-3 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-electric">
-            <Rocket className="h-4 w-4" /> Let's Build
+            <Rocket className="h-4 w-4" /> Let's Build Together
           </div>
           <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
             Build the Future of Autonomous Machinery with <span className="gradient-text">Terra-X</span>
