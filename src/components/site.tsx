@@ -550,6 +550,7 @@ export function Products() {
           logo={rovx}
           subtitle="Engineered for Precision Farming"
           tag="Autonomous Agricultural Vehicle"
+          
           image={rovxImg}
           description="RoVX-AI is an autonomous agricultural vehicle designed for plant health assessment, fertilizer application, orchard monitoring, and robotic farm operations."
           features={[
@@ -631,8 +632,8 @@ export function ProductCard({
           className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t" />
-        <div className="absolute left-4 top-4 flex items-center gap-2">
-          <span className={`rounded-md ${theme.chip} border px-2 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur`}>
+        <div className="absolute left-4 top-3 flex items-center gap-2">
+          <span className={`rounded-md ${theme.chip} border px-3 py-1.5 text-xs font-mono font-semibold uppercase tracking-widest shadow-sm backdrop-blur-sm`}>
             {tag}
           </span>
         </div>
