@@ -1033,7 +1033,7 @@ export function Cell({ on, highlight = false }: { on: boolean; highlight?: boole
 /* ---------------------------- FOUNDER ---------------------------- */
 export function Founder() {
   const points = [
-    "B.Tech Graduate, KTU",
+   
     "Multi-round finalist, IIT Palakkad DISHA Program",
     "2 utility patent-linked innovations",
     "Focused on AI-driven industrial machinery and autonomous systems",
@@ -1041,7 +1041,7 @@ export function Founder() {
   return (
     <Section id="founder" className="border-y border-border bg-card/20">
       <SectionHeader
-        eyebrow="Founder / Promoter"
+        eyebrow="Founder"
         title={<>Led by <span className="gradient-text">Technical Innovation</span></>}
       />
       <div className="mt-14 grid gap-8 lg:grid-cols-[320px_1fr] lg:items-center">
@@ -1053,14 +1053,14 @@ export function Founder() {
                   SA
                 </div>
                 <div className="mt-4 text-lg font-bold">Sooraj Anil</div>
-                <div className="text-xs font-mono uppercase tracking-widest text-electric">Founder · Promoter</div>
+                <div className="text-xs font-mono uppercase tracking-widest text-electric">Founder</div>
               </div>
             </div>
           </div>
         </div>
         <div>
           <p className="text-lg text-foreground/90 leading-relaxed">
-            <span className="font-semibold text-foreground">Sooraj Anil</span> is a B.Tech graduate from KTU with a strong record of transforming advanced machine concepts into protected intellectual property. He has been a multi-round finalist in the IIT Palakkad DISHA program and brings a rare combination of technical rigor, disruptive thinking, and deep interest in industrial innovation.
+            <span className="font-semibold text-foreground">Sooraj Anil</span>is the founder CEO & Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced machine concepts into the protected intellectual property. He has been multi round finalist in the IIT palakad DISHA  program and brings a rare combination of technical rigor , disruptive thinking, abd deep interest in industrial innovation.
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {points.map((p) => (
