@@ -53,7 +53,20 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
+
+type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  to: string;
+  activeProps?: { className?: string };
+  activeOptions?: { exact?: boolean };
+};
+
+function Link({ to, className = "", activeProps, activeOptions, ...props }: LinkProps) {
+  const currentPath = typeof window === "undefined" ? "" : window.location.pathname;
+  const isActive = activeOptions?.exact ? currentPath === to : currentPath.startsWith(to);
+  const activeClassName = isActive ? activeProps?.className || "" : "";
+
+  return <a href={to} className={`${className} ${activeClassName}`.trim()} {...props} />;
+}
 
 /* ------------------------------ NAV ------------------------------ */
 export const navLinks = [

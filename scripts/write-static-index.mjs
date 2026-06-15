@@ -17,7 +17,7 @@ const assetsDir = join(distDir, "assets");
 const assets = await readdir(assetsDir, { withFileTypes: true });
 const files = assets.filter((entry) => entry.isFile()).map((entry) => entry.name);
 
-const styleFile = files.find((file) => /^styles-.*\.css$/.test(file));
+const styleFile = files.find((file) => /^index-.*\.css$/.test(file));
 const entryFiles = files.filter((file) => /^index-.*\.js$/.test(file));
 
 if (!styleFile || entryFiles.length === 0) {
