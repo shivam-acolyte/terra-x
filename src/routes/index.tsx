@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImg from "@/assets/hero-excavator.jpg";
 import { Hero, About, Solutions, Products, Testimonials, Contact } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 import { ArrowRight, Bot, Cpu, Layers, Phone, Sparkles, Target } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -23,11 +24,12 @@ export const Route = createFileRoute("/")({
         content: "Reinventing heavy machinery with autonomous intelligence.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: heroImg },
+      { property: "og:url", content: absoluteUrl("/") },
+      { property: "og:image", content: absoluteUrl(heroImg) },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: heroImg },
+      { name: "twitter:image", content: absoluteUrl(heroImg) },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/") }],
   }),
   component: Index,
 });

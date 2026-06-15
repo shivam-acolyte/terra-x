@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Strategy, Traction, Competitive } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/strategy")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/strategy")({
           "Terra-X go-to-market strategy, early traction, IP, and how we compare with manual excavators, agri drones and existing autonomous machines.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/strategy") },
     ],
-    links: [{ rel: "canonical", href: "/strategy" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/strategy") }],
   }),
   component: Page,
 });

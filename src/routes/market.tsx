@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Market, Customers, Business } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/market")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/market")({
           "$300B+ market across precision agriculture, autonomous construction equipment and industrial robotics — and the customers Terra-X serves.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/market") },
     ],
-    links: [{ rel: "canonical", href: "/market" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/market") }],
   }),
   component: Page,
 });

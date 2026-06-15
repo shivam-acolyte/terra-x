@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav, Footer } from "../components/site";
+import { SITE_DESCRIPTION, SITE_NAME, absoluteUrl } from "../lib/site-config";
 
 function NotFoundComponent() {
   return (
@@ -78,14 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "TERRA-X | AI-Powered Autonomous Heavy Machinery" },
+      { name: "description", content: SITE_DESCRIPTION },
+      { name: "author", content: SITE_NAME },
+      { property: "og:title", content: "TERRA-X | AI-Powered Autonomous Heavy Machinery" },
+      { property: "og:description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:url", content: absoluteUrl("/") },
+      { property: "og:site_name", content: SITE_NAME },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {

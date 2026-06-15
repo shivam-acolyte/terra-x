@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Founder } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/founder")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/founder")({
           "Meet Sooraj Anil — founder of Terra-X, building AI-driven autonomous heavy machinery.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/founder") },
     ],
-    links: [{ rel: "canonical", href: "/founder" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/founder") }],
   }),
   component: Page,
 });

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { About, Founder } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/about")({
           "Deep-tech manufacturing startup developing AI-powered autonomous heavy machines for construction, agriculture, rescue, and defense.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/about") },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/about") }],
   }),
   component: Page,
 });

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Contact } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/contact")({
           "Reach Terra-X for partnerships, investment, pilot deployments and strategic collaborations.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/contact") },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/contact") }],
   }),
   component: Page,
 });

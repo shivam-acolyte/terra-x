@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Products, HowItWorks } from "@/components/site";
+import { absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/products")({
   head: () => ({
@@ -17,8 +18,9 @@ export const Route = createFileRoute("/products")({
           "Explore RoVX-AI agricultural rover and RAMBO-X amphibious autonomous excavator from Terra-X.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: absoluteUrl("/products") },
     ],
-    links: [{ rel: "canonical", href: "/products" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/products") }],
   }),
   component: Page,
 });
