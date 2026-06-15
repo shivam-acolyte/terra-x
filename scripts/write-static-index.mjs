@@ -53,6 +53,7 @@ const html = `<!doctype html>
     <link rel="stylesheet" href="/assets/${styleFile}" />
   </head>
   <body>
+    <div id="root"></div>
     <script type="module" src="/assets/${entryFile}"></script>
   </body>
 </html>
