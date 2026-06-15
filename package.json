@@ -1,13 +1,13 @@
 {
   "name": "tanstack_start_ts",
   "private": true,
-  "homepage": "https://terraxopc.com",
   "sideEffects": false,
   "type": "module",
   "scripts": {
     "dev": "vite dev --configLoader runner --host 0.0.0.0 --port 9765",
-    "build": "vite build --configLoader runner && node scripts/write-static-index.mjs",
-    "build:dev": "vite build --configLoader runner --mode development && node scripts/write-static-index.mjs",
+    "build": "vite build --configLoader runner",
+    "build:static": "vite build --configLoader runner && node scripts/write-static-index.mjs",
+    "build:dev": "vite build --configLoader runner --mode development",
     "preview": "vite preview --configLoader runner --host 0.0.0.0 --port 9765",
     "lint": "eslint .",
     "format": "prettier --write ."
