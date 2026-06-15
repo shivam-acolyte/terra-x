@@ -7,10 +7,21 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "TERRA-X | AI-Powered Autonomous Excavators & Heavy Machinery" },
-      { name: "description", content: "TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense using AI, IoT, LiDAR, and remote operation." },
-      { name: "keywords", content: "autonomous excavator, AI heavy machinery, agricultural robotics, RoVX-AI, RAMBO-X, Terra-X" },
+      {
+        name: "description",
+        content:
+          "TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense using AI, IoT, LiDAR, and remote operation.",
+      },
+      {
+        name: "keywords",
+        content:
+          "autonomous excavator, AI heavy machinery, agricultural robotics, RoVX-AI, RAMBO-X, Terra-X",
+      },
       { property: "og:title", content: "TERRA-X | AI-Powered Autonomous Heavy Machinery" },
-      { property: "og:description", content: "Reinventing heavy machinery with autonomous intelligence." },
+      {
+        property: "og:description",
+        content: "Reinventing heavy machinery with autonomous intelligence.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:image", content: heroImg },
       { name: "twitter:card", content: "summary_large_image" },
@@ -22,12 +33,42 @@ export const Route = createFileRoute("/")({
 });
 
 const explore = [
-  { to: "/about" as const, icon: Sparkles, title: "About Terra-X", body: "Who we are and what we build." },
-  { to: "/products" as const, icon: Bot, title: "Machines", body: "RoVX-AI & RAMBO-X autonomous platforms." },
-  { to: "/technology" as const, icon: Cpu, title: "Technology", body: "AI, LiDAR, robotics, IoT, remote ops." },
-  { to: "/market" as const, icon: Layers, title: "Market & Customers", body: "$300B+ opportunity, target segments, model." },
-  { to: "/strategy" as const, icon: Target, title: "Strategy & Traction", body: "GTM, milestones, competitive landscape." },
-  { to: "/contact" as const, icon: Phone, title: "Contact", body: "Partnerships, pilots, investors." },
+  {
+    to: "/about" as const,
+    icon: Sparkles,
+    title: "About Terra-X",
+    body: "Who we are and what we build.",
+  },
+  {
+    to: "/products" as const,
+    icon: Bot,
+    title: "Machines",
+    body: "RoVX-AI & RAMBO-X autonomous platforms.",
+  },
+  {
+    to: "/technology" as const,
+    icon: Cpu,
+    title: "Technology",
+    body: "AI, LiDAR, robotics, IoT, remote ops.",
+  },
+  {
+    to: "/market" as const,
+    icon: Layers,
+    title: "Market & Customers",
+    body: "$300B+ opportunity, target segments, model.",
+  },
+  {
+    to: "/strategy" as const,
+    icon: Target,
+    title: "Strategy & Traction",
+    body: "GTM, milestones, competitive landscape.",
+  },
+  {
+    to: "/contact" as const,
+    icon: Phone,
+    title: "Contact",
+    body: "Partnerships, pilots, investors.",
+  },
 ];
 
 function Index() {

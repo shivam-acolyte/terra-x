@@ -5,9 +5,17 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Terra-X | Partnerships, Pilots & Investment" },
-      { name: "description", content: "Reach Terra-X for partnerships, investment, pilot deployments and strategic collaborations." },
+      {
+        name: "description",
+        content:
+          "Reach Terra-X for partnerships, investment, pilot deployments and strategic collaborations.",
+      },
       { property: "og:title", content: "Contact Terra-X | Partnerships, Pilots & Investment" },
-      { property: "og:description", content: "Reach Terra-X for partnerships, investment, pilot deployments and strategic collaborations." },
+      {
+        property: "og:description",
+        content:
+          "Reach Terra-X for partnerships, investment, pilot deployments and strategic collaborations.",
+      },
       { property: "og:type", content: "website" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],

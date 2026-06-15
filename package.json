@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build --configLoader runner",
-    "build:dev": "vite build --configLoader runner --mode development",
+    "build": "vite build --configLoader runner && node scripts/write-static-index.mjs",
+    "build:dev": "vite build --configLoader runner --mode development && node scripts/write-static-index.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."

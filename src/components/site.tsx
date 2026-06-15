@@ -3,7 +3,7 @@ import slideExcavator from "@/assets/slide-excavator.jpg";
 import slideAgri from "@/assets/slide-agri.jpg";
 import slideAmphibious from "@/assets/slide-amphibious.jpg";
 import slideTech from "@/assets/slide-tech.jpg";
-import logo from "@/assets/l2.png"
+import logo from "@/assets/l2.png";
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
 import terraLogo from "@/assets/terra-x-logo.png.asset.json";
@@ -14,18 +14,46 @@ import { useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import {
-  Brain, Radar, Cpu, Bot, Smartphone, RefreshCw,
-  Tractor, Waves, Layers, ShieldCheck, Sparkles,
-  AlertTriangle, Users, DollarSign, Wrench, Sprout,
-  Building2, Landmark, Network, ArrowRight, Check, X,
-  Phone, Mail, Linkedin, ChevronRight, Zap, MapPin,
-  Eye, Radio, Wifi, Activity, Target, Rocket,
-  ChevronLeft, Quote, Star,
+  Brain,
+  Radar,
+  Cpu,
+  Bot,
+  Smartphone,
+  RefreshCw,
+  Tractor,
+  Waves,
+  Layers,
+  ShieldCheck,
+  Sparkles,
+  AlertTriangle,
+  Users,
+  DollarSign,
+  Wrench,
+  Sprout,
+  Building2,
+  Landmark,
+  Network,
+  ArrowRight,
+  Check,
+  X,
+  Phone,
+  Mail,
+  Linkedin,
+  ChevronRight,
+  Zap,
+  MapPin,
+  Eye,
+  Radio,
+  Wifi,
+  Activity,
+  Target,
+  Rocket,
+  ChevronLeft,
+  Quote,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
-
-
 
 /* ------------------------------ NAV ------------------------------ */
 export const navLinks = [
@@ -43,34 +71,34 @@ export function Nav() {
     <header className="fixed top-0 z-50 w-full">
       <TopBar />
       <div className="w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 font-bold tracking-tight" aria-label="TERRA-X home">
-          <img
-            src={logo}
-            alt="TERRA-X (OPC) Pvt Ltd logo"
-            className="h-10 w-auto sm:h-11"
-          />
-        </Link>
-        <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="text-sm text-muted-foreground transition hover:text-electric"
-              activeProps={{ className: "text-electric font-semibold" }}
-              activeOptions={{ exact: true }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <Link
-          to="/contact"
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-        >
-          Get in touch <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link
+            to="/"
+            className="flex items-center gap-2 font-bold tracking-tight"
+            aria-label="TERRA-X home"
+          >
+            <img src={logo} alt="TERRA-X (OPC) Pvt Ltd logo" className="h-10 w-auto sm:h-11" />
+          </Link>
+          <nav className="hidden items-center gap-8 md:flex">
+            {navLinks.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="text-sm text-muted-foreground transition hover:text-electric"
+                activeProps={{ className: "text-electric font-semibold" }}
+                activeOptions={{ exact: true }}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+          >
+            Get in touch <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </header>
   );
@@ -103,7 +131,6 @@ export function TopBar() {
   );
 }
 
-
 /* ------------------------------ HERO ------------------------------ */
 export function Hero() {
   return (
@@ -128,10 +155,13 @@ export function Hero() {
             <span className="gradient-text">Autonomous Intelligence</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-            AI-powered autonomous excavators designed for agriculture, construction, rescue, and defense applications.
+            AI-powered autonomous excavators designed for agriculture, construction, rescue, and
+            defense applications.
           </p>
           <p className="mt-4 max-w-xl text-base text-muted-foreground/80">
-            TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
+            TERRA-X is building next-generation heavy machinery that reduces human dependency,
+            improves safety, and enables precision operations across land, farms, and challenging
+            environments.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
@@ -161,7 +191,6 @@ export function Hero() {
             <Stat label="Patent-Linked IP" value="2" />
           </div>
         </div>
-
       </div>
     </section>
   );
@@ -169,10 +198,9 @@ export function Hero() {
 
 /* ------------------------------ HERO BANNER ------------------------------ */
 export function HeroBanner() {
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start" },
-    [Autoplay({ delay: 5000, stopOnInteraction: false })],
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({ delay: 5000, stopOnInteraction: false }),
+  ]);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -180,12 +208,17 @@ export function HeroBanner() {
     const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect);
     onSelect();
-    return () => { emblaApi.off("select", onSelect); };
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
   }, [emblaApi]);
 
   return (
     <div className="relative w-full">
-      <div ref={emblaRef} className="overflow-hidden border-y border-border bg-card shadow-[var(--shadow-elevated)]">
+      <div
+        ref={emblaRef}
+        className="overflow-hidden border-y border-border bg-card shadow-[var(--shadow-elevated)]"
+      >
         <div className="flex">
           {slides.map((s, i) => (
             <div key={s.title} className="relative min-w-0 flex-[0_0_100%]">
@@ -202,7 +235,9 @@ export function HeroBanner() {
                 <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase tracking-widest backdrop-blur">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {s.tag}
                 </span>
-                <h2 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">{s.title}</h2>
+                <h2 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">
+                  {s.title}
+                </h2>
                 <p className="max-w-xl text-base text-background/85 sm:text-lg">{s.caption}</p>
               </div>
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-electric to-transparent animate-scan" />
@@ -270,10 +305,9 @@ export const slides = [
 ];
 
 export function HeroSlider() {
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: "start" },
-    [Autoplay({ delay: 4500, stopOnInteraction: false })],
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({ delay: 4500, stopOnInteraction: false }),
+  ]);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -305,8 +339,12 @@ export function HeroSlider() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/30 to-transparent" />
               {/* HUD corners */}
-              {["top-3 left-3 border-l-2 border-t-2", "top-3 right-3 border-r-2 border-t-2",
-                "bottom-3 left-3 border-l-2 border-b-2", "bottom-3 right-3 border-r-2 border-b-2"].map((p) => (
+              {[
+                "top-3 left-3 border-l-2 border-t-2",
+                "top-3 right-3 border-r-2 border-t-2",
+                "bottom-3 left-3 border-l-2 border-b-2",
+                "bottom-3 right-3 border-r-2 border-b-2",
+              ].map((p) => (
                 <div key={p} className={`absolute h-5 w-5 border-electric ${p}`} />
               ))}
               <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 text-background">
@@ -382,8 +420,16 @@ export function Stat({ label, value }: { label: string; value: string }) {
 
 /* ---------------------------- SECTION SHELL ---------------------------- */
 export function SectionHeader({
-  eyebrow, title, subtitle, center = false,
-}: { eyebrow?: string; title: React.ReactNode; subtitle?: string; center?: boolean }) {
+  eyebrow,
+  title,
+  subtitle,
+  center = false,
+}: {
+  eyebrow?: string;
+  title: React.ReactNode;
+  subtitle?: string;
+  center?: boolean;
+}) {
   return (
     <div className={`mx-auto max-w-3xl ${center ? "text-center" : ""}`}>
       {eyebrow && (
@@ -398,8 +444,14 @@ export function SectionHeader({
 }
 
 export function Section({
-  id, children, className = "",
-}: { id?: string; children: React.ReactNode; className?: string }) {
+  id,
+  children,
+  className = "",
+}: {
+  id?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <section id={id} className={`relative py-20 sm:py-28 ${className}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
@@ -420,7 +472,12 @@ export function About() {
     <Section id="about">
       <SectionHeader
         eyebrow="Who We Are"
-        title={<>Building intelligent machines for the <span className="gradient-text">future of work</span></>}
+        title={
+          <>
+            Building intelligent machines for the{" "}
+            <span className="gradient-text">future of work</span>
+          </>
+        }
         subtitle="TERRA-X is a deep-tech manufacturing startup developing AI-powered autonomous heavy machines for construction, agriculture, rescue, and defense — transforming traditional excavators into smart robotic platforms using AI, IoT, LiDAR, cameras, robotics, and remote-control systems."
       />
 
@@ -457,14 +514,28 @@ export function About() {
 }
 
 export function VMCard({
-  tag, icon: Icon, text, accent,
-}: { tag: string; icon: React.ElementType; text: string; accent: "electric" | "safety" }) {
+  tag,
+  icon: Icon,
+  text,
+  accent,
+}: {
+  tag: string;
+  icon: React.ElementType;
+  text: string;
+  accent: "electric" | "safety";
+}) {
   const isE = accent === "electric";
   return (
-    <div className={`relative overflow-hidden rounded-2xl border ${isE ? "border-electric/30" : "border-accent/30"} bg-card/40 p-8`}>
-      <div className={`absolute -right-12 -top-12 h-40 w-40 rounded-full ${isE ? "bg-electric/15" : "bg-accent/15"} blur-2xl`} />
+    <div
+      className={`relative overflow-hidden rounded-2xl border ${isE ? "border-electric/30" : "border-accent/30"} bg-card/40 p-8`}
+    >
+      <div
+        className={`absolute -right-12 -top-12 h-40 w-40 rounded-full ${isE ? "bg-electric/15" : "bg-accent/15"} blur-2xl`}
+      />
       <div className="relative">
-        <div className={`mb-4 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] ${isE ? "text-electric" : "text-accent"}`}>
+        <div
+          className={`mb-4 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] ${isE ? "text-electric" : "text-accent"}`}
+        >
           <Icon className="h-4 w-4" /> {tag}
         </div>
         <p className="text-xl font-medium leading-snug text-foreground">{text}</p>
@@ -476,17 +547,43 @@ export function VMCard({
 /* ---------------------------- PROBLEMS ---------------------------- */
 export function Problems() {
   const items = [
-    { icon: DollarSign, title: "High Equipment Cost", body: "Multiple machines are required for agriculture, construction, land preparation, rescue, and industrial work — increasing capital cost and operational complexity." },
-    { icon: Users, title: "Operator Dependency", body: "Skilled machine operators are expensive, limited, and inconsistent, making execution difficult in remote and high-risk locations." },
-    { icon: AlertTriangle, title: "Safety Risks", body: "Mining, flood zones, construction sites, and disaster areas expose human operators to serious hazards every single day." },
-    { icon: Sprout, title: "Inefficient Farming", body: "Farmers lack precision tools for tree-level crop monitoring, fertilizer application, and plant health assessment." },
+    {
+      icon: DollarSign,
+      title: "High Equipment Cost",
+      body: "Multiple machines are required for agriculture, construction, land preparation, rescue, and industrial work — increasing capital cost and operational complexity.",
+    },
+    {
+      icon: Users,
+      title: "Operator Dependency",
+      body: "Skilled machine operators are expensive, limited, and inconsistent, making execution difficult in remote and high-risk locations.",
+    },
+    {
+      icon: AlertTriangle,
+      title: "Safety Risks",
+      body: "Mining, flood zones, construction sites, and disaster areas expose human operators to serious hazards every single day.",
+    },
+    {
+      icon: Sprout,
+      title: "Inefficient Farming",
+      body: "Farmers lack precision tools for tree-level crop monitoring, fertilizer application, and plant health assessment.",
+    },
   ];
   return (
     <Section className="border-y border-border bg-card/20">
-      <SectionHeader eyebrow="Problems We Solve" title={<>The Challenge with <span className="text-accent">Traditional Heavy Machinery</span></>} />
+      <SectionHeader
+        eyebrow="Problems We Solve"
+        title={
+          <>
+            The Challenge with <span className="text-accent">Traditional Heavy Machinery</span>
+          </>
+        }
+      />
       <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {items.map((p, i) => (
-          <div key={p.title} className="group relative rounded-xl border border-border bg-background/60 p-6 transition hover:border-accent/50">
+          <div
+            key={p.title}
+            className="group relative rounded-xl border border-border bg-background/60 p-6 transition hover:border-accent/50"
+          >
             <div className="mb-4 flex items-center justify-between">
               <div className="grid h-11 w-11 place-items-center rounded-md bg-accent/10 text-accent">
                 <p.icon className="h-5 w-5" />
@@ -505,21 +602,45 @@ export function Problems() {
 /* ---------------------------- SOLUTIONS ---------------------------- */
 export function Solutions() {
   const items = [
-    { icon: Brain, title: "AI-Powered Autonomous Machines", body: "Excavation and agriculture capabilities integrated into one intelligent machine platform." },
-    { icon: Radar, title: "Smart Sensor Integration", body: "LiDAR, AI cameras, and sensor systems enable 3D mapping, object detection, and environment awareness." },
-    { icon: Sprout, title: "Precision Farming Capability", body: "Tree-level fertilizer application, crop monitoring, and plant health assessment for orchard farming." },
-    { icon: Smartphone, title: "App-Based & Voice Control", body: "Remote operation, smart commands, feedback loops, and operator-assist features for safer execution." },
+    {
+      icon: Brain,
+      title: "AI-Powered Autonomous Machines",
+      body: "Excavation and agriculture capabilities integrated into one intelligent machine platform.",
+    },
+    {
+      icon: Radar,
+      title: "Smart Sensor Integration",
+      body: "LiDAR, AI cameras, and sensor systems enable 3D mapping, object detection, and environment awareness.",
+    },
+    {
+      icon: Sprout,
+      title: "Precision Farming Capability",
+      body: "Tree-level fertilizer application, crop monitoring, and plant health assessment for orchard farming.",
+    },
+    {
+      icon: Smartphone,
+      title: "App-Based & Voice Control",
+      body: "Remote operation, smart commands, feedback loops, and operator-assist features for safer execution.",
+    },
   ];
   return (
     <Section id="solutions">
       <SectionHeader
         eyebrow="Our Solution"
-        title={<>Autonomous Machines Built for <span className="gradient-text">Multi-Domain Operations</span></>}
+        title={
+          <>
+            Autonomous Machines Built for{" "}
+            <span className="gradient-text">Multi-Domain Operations</span>
+          </>
+        }
         subtitle="One intelligent platform combining excavation, sensing, mobility, and automation."
       />
       <div className="mt-14 grid gap-5 md:grid-cols-2">
         {items.map((s) => (
-          <div key={s.title} className="group flex gap-5 rounded-2xl border border-border bg-card/40 p-6 transition hover:border-electric hover:-translate-y-1 duration-300">
+          <div
+            key={s.title}
+            className="group flex gap-5 rounded-2xl border border-border bg-card/40 p-6 transition hover:border-electric hover:-translate-y-1 duration-300"
+          >
             <div className="shrink-0">
               <div className="grid h-12 w-12 place-items-center rounded-lg bg-gradient-to-br from-electric/20 to-electric/5 text-electric ring-1 ring-electric/30">
                 <s.icon className="h-6 w-6" />
@@ -542,7 +663,11 @@ export function Products() {
     <Section id="products" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Products / Machines"
-        title={<>Our <span className="gradient-text">Autonomous Machine</span> Platforms</>}
+        title={
+          <>
+            Our <span className="gradient-text">Autonomous Machine</span> Platforms
+          </>
+        }
       />
       <div className="mt-14 grid gap-8 lg:grid-cols-2">
         <ProductCard
@@ -550,7 +675,6 @@ export function Products() {
           logo={rovx}
           subtitle="Engineered for Precision Farming"
           tag="Autonomous Agricultural Vehicle"
-          
           image={rovxImg}
           description="RoVX-AI is an autonomous agricultural vehicle designed for plant health assessment, fertilizer application, orchard monitoring, and robotic farm operations."
           features={[
@@ -588,10 +712,25 @@ export function Products() {
 }
 
 export function ProductCard({
-  name, logo, subtitle, tag, image, description, features, note, accent,
+  name,
+  logo,
+  subtitle,
+  tag,
+  image,
+  description,
+  features,
+  note,
+  accent,
 }: {
-  name: string; logo: string; subtitle: string; tag: string; image: string;
-  description: string; features: string[]; note: string; accent: "gold" | "rambo";
+  name: string;
+  logo: string;
+  subtitle: string;
+  tag: string;
+  image: string;
+  description: string;
+  features: string[];
+  note: string;
+  accent: "gold" | "rambo";
 }) {
   const isGold = accent === "gold";
   const theme = isGold
@@ -614,8 +753,12 @@ export function ProductCard({
         gradient: "from-[oklch(0.96_0.06_27)] via-background to-[oklch(0.98_0.04_27)]",
       };
   return (
-    <article className={`group relative overflow-hidden rounded-2xl border ${theme.border} bg-gradient-to-br ${theme.gradient} transition hover:shadow-[var(--shadow-elevated)]`}>
-      <div className={`flex items-center justify-center border-b ${theme.border} ${theme.bg} px-6 py-6`}>
+    <article
+      className={`group relative overflow-hidden rounded-2xl border ${theme.border} bg-gradient-to-br ${theme.gradient} transition hover:shadow-[var(--shadow-elevated)]`}
+    >
+      <div
+        className={`flex items-center justify-center border-b ${theme.border} ${theme.bg} px-6 py-6`}
+      >
         <img
           src={logo}
           alt={`${name} logo`}
@@ -633,7 +776,9 @@ export function ProductCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t" />
         <div className="absolute left-4 top-3 flex items-center gap-2">
-          <span className={`rounded-md ${theme.chip} border px-3 py-1.5 text-xs font-mono font-semibold uppercase tracking-widest shadow-sm backdrop-blur-sm`}>
+          <span
+            className={`rounded-md ${theme.chip} border px-3 py-1.5 text-xs font-mono font-semibold uppercase tracking-widest shadow-sm backdrop-blur-sm`}
+          >
             {tag}
           </span>
         </div>
@@ -653,7 +798,8 @@ export function ProductCard({
           ))}
         </ul>
         <div className="mt-6 rounded-md border border-border bg-card/60 p-3 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">IP Note: </span>{note}
+          <span className="font-semibold text-foreground">IP Note: </span>
+          {note}
         </div>
       </div>
     </article>
@@ -664,17 +810,43 @@ export function ProductCard({
 export function HowItWorks() {
   const steps = [
     { icon: Smartphone, title: "User / AI Input", body: "User or AI assigns a task" },
-    { icon: Radar, title: "Sensor Mapping", body: "LiDAR, cameras, and sensors map the environment" },
-    { icon: Cpu, title: "AI Processing", body: "AI processes terrain, object, crop, or excavation data" },
-    { icon: Wrench, title: "Task Execution", body: "Machine performs autonomously or with operator assist" },
-    { icon: RefreshCw, title: "Feedback Loop", body: "System collects feedback for smarter future decisions" },
+    {
+      icon: Radar,
+      title: "Sensor Mapping",
+      body: "LiDAR, cameras, and sensors map the environment",
+    },
+    {
+      icon: Cpu,
+      title: "AI Processing",
+      body: "AI processes terrain, object, crop, or excavation data",
+    },
+    {
+      icon: Wrench,
+      title: "Task Execution",
+      body: "Machine performs autonomously or with operator assist",
+    },
+    {
+      icon: RefreshCw,
+      title: "Feedback Loop",
+      body: "System collects feedback for smarter future decisions",
+    },
   ];
-  const features = ["Autonomous navigation", "Precision excavation", "Smart decision-making", "Remote monitoring", "Predictive alerts"];
+  const features = [
+    "Autonomous navigation",
+    "Precision excavation",
+    "Smart decision-making",
+    "Remote monitoring",
+    "Predictive alerts",
+  ];
   return (
     <Section id="how">
       <SectionHeader
         eyebrow="How It Works"
-        title={<>How <span className="gradient-text">Terra-X Machines</span> Operate</>}
+        title={
+          <>
+            How <span className="gradient-text">Terra-X Machines</span> Operate
+          </>
+        }
       />
       <div className="mt-14 grid gap-3 lg:grid-cols-5">
         {steps.map((s, i) => (
@@ -698,7 +870,10 @@ export function HowItWorks() {
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         {features.map((f) => (
-          <span key={f} className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-4 py-2 text-xs">
+          <span
+            key={f}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-4 py-2 text-xs"
+          >
             <Zap className="h-3.5 w-3.5 text-electric" /> {f}
           </span>
         ))}
@@ -710,41 +885,101 @@ export function HowItWorks() {
 /* ---------------------------- TECH STACK ---------------------------- */
 export function TechStack() {
   const items = [
-    { icon: Brain, title: "Artificial Intelligence", body: "Real-time decision-making, crop health analysis, object detection, and adaptive task planning." },
-    { icon: Radar, title: "LiDAR & 3D Mapping", body: "Terrain scanning, mapping, obstacle detection, and spatial awareness." },
-    { icon: Wifi, title: "IoT & Sensor Fusion", body: "Integrated sensor network for machine health, environmental data, and operational feedback." },
-    { icon: Bot, title: "Robotics & Automation", body: "Robotic arms, modular tools, smart actuation, and autonomous task execution." },
-    { icon: Radio, title: "Remote Operation Platform", body: "App-based booking, monitoring, control, and machine operation." },
-    { icon: RefreshCw, title: "AI Feedback Loop", body: "Continuous improvement using machine data, task history, and field performance." },
+    {
+      icon: Brain,
+      title: "Artificial Intelligence",
+      body: "Real-time decision-making, crop health analysis, object detection, and adaptive task planning.",
+    },
+    {
+      icon: Radar,
+      title: "LiDAR & 3D Mapping",
+      body: "Terrain scanning, mapping, obstacle detection, and spatial awareness.",
+    },
+    {
+      icon: Wifi,
+      title: "IoT & Sensor Fusion",
+      body: "Integrated sensor network for machine health, environmental data, and operational feedback.",
+    },
+    {
+      icon: Bot,
+      title: "Robotics & Automation",
+      body: "Robotic arms, modular tools, smart actuation, and autonomous task execution.",
+    },
+    {
+      icon: Radio,
+      title: "Remote Operation Platform",
+      body: "App-based booking, monitoring, control, and machine operation.",
+    },
+    {
+      icon: RefreshCw,
+      title: "AI Feedback Loop",
+      body: "Continuous improvement using machine data, task history, and field performance.",
+    },
   ];
   return (
     <Section id="technology" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Technology Stack"
-        title={<>Technology Built Into <span className="gradient-text-rainbow">Every Machine</span></>}
+        title={
+          <>
+            Technology Built Into <span className="gradient-text-rainbow">Every Machine</span>
+          </>
+        }
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((t, i) => {
           const palette = [
-            { tx: "text-electric", bg: "bg-electric/10", ring: "ring-electric/30", blob: "bg-electric/20" },
-            { tx: "text-cyan-brand", bg: "bg-cyan-brand/10", ring: "ring-cyan-brand/30", blob: "bg-cyan-brand/20" },
-            { tx: "text-violet-brand", bg: "bg-violet-brand/10", ring: "ring-violet-brand/30", blob: "bg-violet-brand/20" },
-            { tx: "text-emerald-brand", bg: "bg-emerald-brand/10", ring: "ring-emerald-brand/30", blob: "bg-emerald-brand/20" },
-            { tx: "text-magenta-brand", bg: "bg-magenta-brand/10", ring: "ring-magenta-brand/30", blob: "bg-magenta-brand/20" },
+            {
+              tx: "text-electric",
+              bg: "bg-electric/10",
+              ring: "ring-electric/30",
+              blob: "bg-electric/20",
+            },
+            {
+              tx: "text-cyan-brand",
+              bg: "bg-cyan-brand/10",
+              ring: "ring-cyan-brand/30",
+              blob: "bg-cyan-brand/20",
+            },
+            {
+              tx: "text-violet-brand",
+              bg: "bg-violet-brand/10",
+              ring: "ring-violet-brand/30",
+              blob: "bg-violet-brand/20",
+            },
+            {
+              tx: "text-emerald-brand",
+              bg: "bg-emerald-brand/10",
+              ring: "ring-emerald-brand/30",
+              blob: "bg-emerald-brand/20",
+            },
+            {
+              tx: "text-magenta-brand",
+              bg: "bg-magenta-brand/10",
+              ring: "ring-magenta-brand/30",
+              blob: "bg-magenta-brand/20",
+            },
             { tx: "text-accent", bg: "bg-accent/10", ring: "ring-accent/30", blob: "bg-accent/20" },
           ];
           const p = palette[i % palette.length];
           return (
-          <div key={t.title} className={`group relative overflow-hidden rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric`}>
-            <div className={`absolute right-0 top-0 h-32 w-32 -translate-y-1/2 translate-x-1/2 rounded-full ${p.blob} opacity-0 blur-2xl transition group-hover:opacity-100`} />
-            <div className="relative">
-              <div className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${p.bg} ${p.tx} ring-1 ${p.ring}`}>
-                <t.icon className="h-5 w-5" />
+            <div
+              key={t.title}
+              className={`group relative overflow-hidden rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric`}
+            >
+              <div
+                className={`absolute right-0 top-0 h-32 w-32 -translate-y-1/2 translate-x-1/2 rounded-full ${p.blob} opacity-0 blur-2xl transition group-hover:opacity-100`}
+              />
+              <div className="relative">
+                <div
+                  className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${p.bg} ${p.tx} ring-1 ${p.ring}`}
+                >
+                  <t.icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-bold">{t.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{t.body}</p>
               </div>
-              <h3 className="text-lg font-bold">{t.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{t.body}</p>
             </div>
-          </div>
           );
         })}
       </div>
@@ -755,17 +990,41 @@ export function TechStack() {
 /* ---------------------------- MOAT / USP ---------------------------- */
 export function Moat() {
   const items = [
-    { icon: Layers, title: "Multi-Domain Capability", body: "One platform designed for agriculture, construction, rescue, and defense." },
-    { icon: Bot, title: "Autonomous Operation", body: "AI-driven digging, mapping, navigation, monitoring, and execution." },
-    { icon: Waves, title: "Amphibious Technology", body: "RAMBO-X supports land and water-based applications for flood, rescue, and challenging terrains." },
-    { icon: Wrench, title: "Modular System", body: "Plug-and-play tools for agriculture, excavation, rescue, monitoring, and future machine upgrades." },
-    { icon: ShieldCheck, title: "Strong IP Foundation", body: "Terra-X has developed protected designs and IP around RoVX-AI and RAMBO-X machine platforms." },
+    {
+      icon: Layers,
+      title: "Multi-Domain Capability",
+      body: "One platform designed for agriculture, construction, rescue, and defense.",
+    },
+    {
+      icon: Bot,
+      title: "Autonomous Operation",
+      body: "AI-driven digging, mapping, navigation, monitoring, and execution.",
+    },
+    {
+      icon: Waves,
+      title: "Amphibious Technology",
+      body: "RAMBO-X supports land and water-based applications for flood, rescue, and challenging terrains.",
+    },
+    {
+      icon: Wrench,
+      title: "Modular System",
+      body: "Plug-and-play tools for agriculture, excavation, rescue, monitoring, and future machine upgrades.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Strong IP Foundation",
+      body: "Terra-X has developed protected designs and IP around RoVX-AI and RAMBO-X machine platforms.",
+    },
   ];
   return (
     <Section id="moat">
       <SectionHeader
         eyebrow="Technology Moat"
-        title={<>Why <span className="gradient-text">Terra-X</span> Is Different</>}
+        title={
+          <>
+            Why <span className="gradient-text">Terra-X</span> Is Different
+          </>
+        }
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((m, i) => (
@@ -788,24 +1047,53 @@ export function Moat() {
 /* ---------------------------- MARKET ---------------------------- */
 export function Market() {
   const tiers = [
-    { label: "TAM · Total Addressable", value: "$300B+", body: "Global heavy machinery, agriculture & robotics market" },
-    { label: "SAM · Serviceable Available", value: "$35B", body: "Precision agriculture + autonomous construction equipment" },
-    { label: "SOM · Serviceable Obtainable", value: "$300M", body: "Initial India + emerging market opportunity" },
+    {
+      label: "TAM · Total Addressable",
+      value: "$300B+",
+      body: "Global heavy machinery, agriculture & robotics market",
+    },
+    {
+      label: "SAM · Serviceable Available",
+      value: "$35B",
+      body: "Precision agriculture + autonomous construction equipment",
+    },
+    {
+      label: "SOM · Serviceable Obtainable",
+      value: "$300M",
+      body: "Initial India + emerging market opportunity",
+    },
   ];
   return (
     <Section id="market" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Market Opportunity"
-        title={<>A Large Opportunity Across <span className="gradient-text-sunset">Agriculture, Construction & Automation</span></>}
+        title={
+          <>
+            A Large Opportunity Across{" "}
+            <span className="gradient-text-sunset">Agriculture, Construction & Automation</span>
+          </>
+        }
         subtitle="TERRA-X operates at the intersection of precision agriculture, construction equipment, autonomous machinery, and industrial robotics — addressing labor shortages, safety risks, climate disasters, and the need for precision automation."
       />
       <div className="mt-14 grid items-end gap-6 md:grid-cols-3">
         {tiers.map((t, i) => {
           const widths = ["w-full", "w-[78%]", "w-[55%]"];
           const tints = [
-            { border: "border-electric/30 hover:border-electric", label: "text-electric", val: "gradient-text" },
-            { border: "border-cyan-brand/30 hover:border-cyan-brand", label: "text-cyan-brand", val: "gradient-text-sunset" },
-            { border: "border-violet-brand/30 hover:border-violet-brand", label: "text-violet-brand", val: "gradient-text-rainbow" },
+            {
+              border: "border-electric/30 hover:border-electric",
+              label: "text-electric",
+              val: "gradient-text",
+            },
+            {
+              border: "border-cyan-brand/30 hover:border-cyan-brand",
+              label: "text-cyan-brand",
+              val: "gradient-text-sunset",
+            },
+            {
+              border: "border-violet-brand/30 hover:border-violet-brand",
+              label: "text-violet-brand",
+              val: "gradient-text-rainbow",
+            },
           ];
           const c = tints[i];
           return (
@@ -813,7 +1101,9 @@ export function Market() {
               key={t.label}
               className={`relative mx-auto ${widths[i]} rounded-2xl border ${c.border} bg-gradient-to-br from-card to-background p-8 text-center transition`}
             >
-              <div className={`font-mono text-xs uppercase tracking-widest ${c.label}`}>{t.label}</div>
+              <div className={`font-mono text-xs uppercase tracking-widest ${c.label}`}>
+                {t.label}
+              </div>
               <div className={`mt-4 text-5xl font-black tracking-tight ${c.val}`}>{t.value}</div>
               <p className="mt-3 text-sm text-muted-foreground">{t.body}</p>
             </div>
@@ -827,34 +1117,66 @@ export function Market() {
 /* ---------------------------- CUSTOMERS ---------------------------- */
 export function Customers() {
   const items = [
-    { icon: Sprout, title: "Orchard Farmers", body: "Farmers growing coconut, mango, and other orchard crops needing precise fertilizer application, disease detection, and tree-level monitoring." },
-    { icon: Building2, title: "Small Contractors", body: "Contractors who need cost-effective excavation and land preparation without depending heavily on skilled operators." },
-    { icon: Landmark, title: "Government Bodies", body: "Agriculture departments, disaster response agencies, rural development programs, and infrastructure bodies." },
-    { icon: Network, title: "Agri-Tech Platforms", body: "Farm analytics, automation, and precision agriculture companies integrating Terra-X machines into service networks." },
+    {
+      icon: Sprout,
+      title: "Orchard Farmers",
+      body: "Farmers growing coconut, mango, and other orchard crops needing precise fertilizer application, disease detection, and tree-level monitoring.",
+    },
+    {
+      icon: Building2,
+      title: "Small Contractors",
+      body: "Contractors who need cost-effective excavation and land preparation without depending heavily on skilled operators.",
+    },
+    {
+      icon: Landmark,
+      title: "Government Bodies",
+      body: "Agriculture departments, disaster response agencies, rural development programs, and infrastructure bodies.",
+    },
+    {
+      icon: Network,
+      title: "Agri-Tech Platforms",
+      body: "Farm analytics, automation, and precision agriculture companies integrating Terra-X machines into service networks.",
+    },
   ];
   return (
     <Section id="customers">
       <SectionHeader
         eyebrow="Target Customers"
-        title={<>Built for <span className="gradient-text-rainbow">High-Need, High-Impact</span> Customers</>}
+        title={
+          <>
+            Built for <span className="gradient-text-rainbow">High-Need, High-Impact</span>{" "}
+            Customers
+          </>
+        }
       />
       <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {items.map((c, i) => {
           const tints = [
-            { tx: "text-emerald-brand", bg: "bg-emerald-brand/10", br: "hover:border-emerald-brand" },
+            {
+              tx: "text-emerald-brand",
+              bg: "bg-emerald-brand/10",
+              br: "hover:border-emerald-brand",
+            },
             { tx: "text-cyan-brand", bg: "bg-cyan-brand/10", br: "hover:border-cyan-brand" },
             { tx: "text-violet-brand", bg: "bg-violet-brand/10", br: "hover:border-violet-brand" },
-            { tx: "text-magenta-brand", bg: "bg-magenta-brand/10", br: "hover:border-magenta-brand" },
+            {
+              tx: "text-magenta-brand",
+              bg: "bg-magenta-brand/10",
+              br: "hover:border-magenta-brand",
+            },
           ];
           const t = tints[i % tints.length];
           return (
-          <div key={c.title} className={`rounded-xl border border-border bg-card/40 p-6 transition ${t.br} hover:-translate-y-1 duration-300`}>
-            <div className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${t.bg} ${t.tx}`}>
-              <c.icon className="h-5 w-5" />
+            <div
+              key={c.title}
+              className={`rounded-xl border border-border bg-card/40 p-6 transition ${t.br} hover:-translate-y-1 duration-300`}
+            >
+              <div className={`mb-4 grid h-11 w-11 place-items-center rounded-md ${t.bg} ${t.tx}`}>
+                <c.icon className="h-5 w-5" />
+              </div>
+              <h3 className="text-lg font-bold">{c.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{c.body}</p>
             </div>
-            <h3 className="text-lg font-bold">{c.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{c.body}</p>
-          </div>
           );
         })}
       </div>
@@ -865,23 +1187,53 @@ export function Customers() {
 /* ---------------------------- BUSINESS MODEL ---------------------------- */
 export function Business() {
   const items = [
-    { title: "Machine Sales", body: "B2B and government sales of autonomous agricultural and amphibious excavator platforms.", tag: "Hardware" },
-    { title: "Rental Platform", body: "Hourly machine rental model starting from ₹2,100+/hour to make advanced machinery accessible.", tag: "Access" },
-    { title: "AI + Software Subscription", body: "Recurring revenue through AI features, software upgrades, analytics, monitoring, and automation tools.", tag: "SaaS" },
-    { title: "Service & Maintenance", body: "Annual maintenance, spare parts, field support, machine servicing, and fleet uptime support.", tag: "Services" },
-    { title: "Platform Model", body: "Online platform for heavy machinery booking, automation, machine usage data, and remote operation.", tag: "Platform" },
+    {
+      title: "Machine Sales",
+      body: "B2B and government sales of autonomous agricultural and amphibious excavator platforms.",
+      tag: "Hardware",
+    },
+    {
+      title: "Rental Platform",
+      body: "Hourly machine rental model starting from ₹2,100+/hour to make advanced machinery accessible.",
+      tag: "Access",
+    },
+    {
+      title: "AI + Software Subscription",
+      body: "Recurring revenue through AI features, software upgrades, analytics, monitoring, and automation tools.",
+      tag: "SaaS",
+    },
+    {
+      title: "Service & Maintenance",
+      body: "Annual maintenance, spare parts, field support, machine servicing, and fleet uptime support.",
+      tag: "Services",
+    },
+    {
+      title: "Platform Model",
+      body: "Online platform for heavy machinery booking, automation, machine usage data, and remote operation.",
+      tag: "Platform",
+    },
   ];
   return (
     <Section id="business" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Business Model"
-        title={<>Multiple Revenue Streams for <span className="gradient-text-sunset">Scalable Growth</span></>}
+        title={
+          <>
+            Multiple Revenue Streams for{" "}
+            <span className="gradient-text-sunset">Scalable Growth</span>
+          </>
+        }
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((b, i) => (
-          <div key={b.title} className="relative rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric">
+          <div
+            key={b.title}
+            className="relative rounded-xl border border-border bg-background/60 p-6 transition hover:border-electric"
+          >
             <div className="flex items-start justify-between">
-              <span className="font-mono text-xs uppercase tracking-widest text-electric">{b.tag}</span>
+              <span className="font-mono text-xs uppercase tracking-widest text-electric">
+                {b.tag}
+              </span>
               <span className="font-mono text-xs text-muted-foreground">R0{i + 1}</span>
             </div>
             <h3 className="mt-4 text-lg font-bold">{b.title}</h3>
@@ -896,27 +1248,57 @@ export function Business() {
 /* ---------------------------- STRATEGY ---------------------------- */
 export function Strategy() {
   const steps = [
-    { title: "Pilot Deployment", body: "Start with controlled orchard and field pilots to validate performance, ROI, safety, and precision outcomes." },
-    { title: "Rental-Led Adoption", body: "Use affordable hourly rental to lower entry barriers for farmers, small contractors, and local operators." },
-    { title: "Focused Targeting", body: "Begin with orchard farmers where tree-level crop monitoring and fertilizer application create visible value." },
-    { title: "Strategic Partnerships", body: "Collaborate with FPOs, agri-tech companies, government bodies, and machinery rental networks." },
-    { title: "Expansion Roadmap", body: "Scale from agriculture to construction, rescue, disaster response, and defense-linked applications." },
+    {
+      title: "Pilot Deployment",
+      body: "Start with controlled orchard and field pilots to validate performance, ROI, safety, and precision outcomes.",
+    },
+    {
+      title: "Rental-Led Adoption",
+      body: "Use affordable hourly rental to lower entry barriers for farmers, small contractors, and local operators.",
+    },
+    {
+      title: "Focused Targeting",
+      body: "Begin with orchard farmers where tree-level crop monitoring and fertilizer application create visible value.",
+    },
+    {
+      title: "Strategic Partnerships",
+      body: "Collaborate with FPOs, agri-tech companies, government bodies, and machinery rental networks.",
+    },
+    {
+      title: "Expansion Roadmap",
+      body: "Scale from agriculture to construction, rescue, disaster response, and defense-linked applications.",
+    },
   ];
   return (
     <Section id="strategy">
       <SectionHeader
         eyebrow="Market Strategy"
-        title={<>Our <span className="gradient-text">Go-To-Market</span> Strategy</>}
+        title={
+          <>
+            Our <span className="gradient-text">Go-To-Market</span> Strategy
+          </>
+        }
       />
       <div className="mt-14 relative">
         <div className="absolute left-6 top-2 bottom-2 w-px bg-gradient-to-b from-electric via-electric/40 to-transparent md:left-1/2" />
         <ol className="space-y-6">
           {steps.map((s, i) => (
-            <li key={s.title} className={`relative flex flex-col gap-4 md:flex-row md:items-center ${i % 2 ? "md:flex-row-reverse" : ""}`}>
+            <li
+              key={s.title}
+              className={`relative flex flex-col gap-4 md:flex-row md:items-center ${i % 2 ? "md:flex-row-reverse" : ""}`}
+            >
               <div className="ml-12 flex-1 rounded-xl border border-border bg-card/40 p-6 transition hover:border-electric md:ml-0">
-                <div className={`text-xs font-mono uppercase tracking-widest text-electric ${i % 2 ? "md:text-right" : ""}`}>Step 0{i + 1}</div>
-                <h3 className={`mt-2 text-xl font-bold ${i % 2 ? "md:text-right" : ""}`}>{s.title}</h3>
-                <p className={`mt-2 text-sm text-muted-foreground ${i % 2 ? "md:text-right" : ""}`}>{s.body}</p>
+                <div
+                  className={`text-xs font-mono uppercase tracking-widest text-electric ${i % 2 ? "md:text-right" : ""}`}
+                >
+                  Step 0{i + 1}
+                </div>
+                <h3 className={`mt-2 text-xl font-bold ${i % 2 ? "md:text-right" : ""}`}>
+                  {s.title}
+                </h3>
+                <p className={`mt-2 text-sm text-muted-foreground ${i % 2 ? "md:text-right" : ""}`}>
+                  {s.body}
+                </p>
               </div>
               <div className="absolute left-6 top-6 grid h-6 w-6 -translate-x-1/2 place-items-center rounded-full bg-electric ring-4 ring-background md:left-1/2 md:top-1/2 md:-translate-y-1/2">
                 <span className="text-[10px] font-bold text-primary-foreground">{i + 1}</span>
@@ -944,11 +1326,18 @@ export function Traction() {
     <Section id="traction" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Traction & Status"
-        title={<>Early Validation & <span className="gradient-text">IP-Backed Development</span></>}
+        title={
+          <>
+            Early Validation & <span className="gradient-text">IP-Backed Development</span>
+          </>
+        }
       />
       <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((t, i) => (
-          <div key={t} className="flex items-start gap-4 rounded-xl border border-border bg-background/60 p-5 transition hover:border-electric">
+          <div
+            key={t}
+            className="flex items-start gap-4 rounded-xl border border-border bg-background/60 p-5 transition hover:border-electric"
+          >
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-electric/10 font-mono text-sm font-bold text-electric ring-1 ring-electric/30">
               0{i + 1}
             </div>
@@ -977,7 +1366,11 @@ export function Competitive() {
     <Section id="competitive">
       <SectionHeader
         eyebrow="Competitive Landscape"
-        title={<>Our <span className="gradient-text-rainbow">Competitive Advantage</span></>}
+        title={
+          <>
+            Our <span className="gradient-text-rainbow">Competitive Advantage</span>
+          </>
+        }
       />
       <div className="mt-14 overflow-x-auto rounded-2xl border border-border bg-card/40">
         <table className="w-full min-w-[720px] text-left text-sm">
@@ -1009,7 +1402,9 @@ export function Competitive() {
         </table>
       </div>
       <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-muted-foreground">
-        Unlike conventional excavators, agri drones, or single-use precision tools, Terra-X combines excavation, crop intelligence, robotic actuation, AI sensing, and remote operation into one multi-domain machine platform.
+        Unlike conventional excavators, agri drones, or single-use precision tools, Terra-X combines
+        excavation, crop intelligence, robotic actuation, AI sensing, and remote operation into one
+        multi-domain machine platform.
       </p>
     </Section>
   );
@@ -1019,7 +1414,9 @@ export function Cell({ on, highlight = false }: { on: boolean; highlight?: boole
   return (
     <td className={`p-4 ${highlight ? "bg-electric/5" : ""}`}>
       {on ? (
-        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${highlight ? "bg-electric text-primary-foreground" : "bg-electric/15 text-electric"}`}>
+        <span
+          className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${highlight ? "bg-electric text-primary-foreground" : "bg-electric/15 text-electric"}`}
+        >
           <Check className="h-4 w-4" />
         </span>
       ) : (
@@ -1034,7 +1431,6 @@ export function Cell({ on, highlight = false }: { on: boolean; highlight?: boole
 /* ---------------------------- FOUNDER ---------------------------- */
 export function Founder() {
   const points = [
-   
     "Multi-round finalist, IIT Palakkad DISHA Program",
     "2 utility patent-linked innovations",
     "Focused on AI-driven industrial machinery and autonomous systems",
@@ -1043,7 +1439,11 @@ export function Founder() {
     <Section id="founder" className="border-y border-border bg-card/20">
       <SectionHeader
         eyebrow="Founder"
-        title={<>Led by <span className="gradient-text">Technical Innovation</span></>}
+        title={
+          <>
+            Led by <span className="gradient-text">Technical Innovation</span>
+          </>
+        }
       />
       <div className="mt-14 grid gap-8 lg:grid-cols-[320px_1fr] lg:items-center">
         <div className="relative mx-auto w-full max-w-xs">
@@ -1054,18 +1454,27 @@ export function Founder() {
                   SA
                 </div>
                 <div className="mt-4 text-lg font-bold">Sooraj Anil</div>
-                <div className="text-xs font-mono uppercase tracking-widest text-electric">Founder</div>
+                <div className="text-xs font-mono uppercase tracking-widest text-electric">
+                  Founder
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div>
           <p className="text-lg text-foreground/90 leading-relaxed">
-            <span className="font-semibold text-foreground">Sooraj Anil</span> is the founder CEO & Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced machine concepts into the protected intellectual property. He has been multi round finalist in the IIT palakad DISHA  program and brings a rare combination of technical rigor , disruptive thinking, deep interest in industrial innovation.
+            <span className="font-semibold text-foreground">Sooraj Anil</span> is the founder CEO &
+            Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced
+            machine concepts into the protected intellectual property. He has been multi round
+            finalist in the IIT palakad DISHA program and brings a rare combination of technical
+            rigor , disruptive thinking, deep interest in industrial innovation.
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {points.map((p) => (
-              <li key={p} className="flex items-start gap-3 rounded-lg border border-border bg-background/60 p-4">
+              <li
+                key={p}
+                className="flex items-start gap-3 rounded-lg border border-border bg-background/60 p-4"
+              >
                 <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                 <span className="text-sm font-medium">{p}</span>
               </li>
@@ -1091,26 +1500,52 @@ export function Contact() {
             <Rocket className="h-4 w-4" /> Let's Build Together
           </div>
           <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-            Build the Future of Autonomous Machinery with <span className="gradient-text">Terra-X</span>
+            Build the Future of Autonomous Machinery with{" "}
+            <span className="gradient-text">Terra-X</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            For partnerships, investment, pilots, and strategic collaborations, connect with Terra-X.
+            For partnerships, investment, pilots, and strategic collaborations, connect with
+            Terra-X.
           </p>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            <ContactLink icon={Phone} label="Phone" value="+91 6282451947" href="tel:+916282451947" />
-            <ContactLink icon={Mail} label="Email" value="txarmoured@gmail.com" href="mailto:txarmoured@gmail.com" />
-            <ContactLink icon={Linkedin} label="LinkedIn" value="Sooraj Anil" href="https://www.linkedin.com/in/sooraj-anil-43a9872b8" />
+            <ContactLink
+              icon={Phone}
+              label="Phone"
+              value="+91 6282451947"
+              href="tel:+916282451947"
+            />
+            <ContactLink
+              icon={Mail}
+              label="Email"
+              value="txarmoured@gmail.com"
+              href="mailto:txarmoured@gmail.com"
+            />
+            <ContactLink
+              icon={Linkedin}
+              label="LinkedIn"
+              value="Sooraj Anil"
+              href="https://www.linkedin.com/in/sooraj-anil-43a9872b8"
+            />
           </div>
 
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <a href="mailto:txarmoured@gmail.com" className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric">
+            <a
+              href="mailto:txarmoured@gmail.com"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric"
+            >
               Contact Founder <ArrowRight className="h-4 w-4" />
             </a>
-            <a href="mailto:txarmoured@gmail.com?subject=Partnership%20Inquiry" className="inline-flex items-center gap-2 rounded-md border border-accent/50 bg-accent/10 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/20">
+            <a
+              href="mailto:txarmoured@gmail.com?subject=Partnership%20Inquiry"
+              className="inline-flex items-center gap-2 rounded-md border border-accent/50 bg-accent/10 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/20"
+            >
               Request Partnership
             </a>
-            <a href="mailto:txarmoured@gmail.com?subject=Pilot%20Deployment" className="inline-flex items-center gap-2 rounded-md border border-border bg-card/60 px-6 py-3 text-sm font-semibold transition hover:border-electric hover:text-electric">
+            <a
+              href="mailto:txarmoured@gmail.com?subject=Pilot%20Deployment"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card/60 px-6 py-3 text-sm font-semibold transition hover:border-electric hover:text-electric"
+            >
               Discuss Pilot Deployment
             </a>
           </div>
@@ -1121,8 +1556,16 @@ export function Contact() {
 }
 
 export function ContactLink({
-  icon: Icon, label, value, href,
-}: { icon: React.ElementType; label: string; value: string; href: string }) {
+  icon: Icon,
+  label,
+  value,
+  href,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  href: string;
+}) {
   return (
     <a
       href={href}
@@ -1134,7 +1577,9 @@ export function ContactLink({
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{label}</div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+          {label}
+        </div>
         <div className="truncate text-sm font-medium">{value}</div>
       </div>
     </a>
@@ -1167,7 +1612,11 @@ export function Testimonials() {
     <Section id="testimonials" className="bg-card/20 border-y border-border">
       <SectionHeader
         eyebrow="Testimonials"
-        title={<>Trusted by <span className="gradient-text">Operators, Researchers & Investors</span></>}
+        title={
+          <>
+            Trusted by <span className="gradient-text">Operators, Researchers & Investors</span>
+          </>
+        }
         subtitle="Early signals from the people building, validating, and backing Terra-X."
       />
       <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -1202,17 +1651,16 @@ export function Footer() {
     <footer className="border-t border-border bg-background">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6 lg:px-8">
         <div>
-          <img
-            src={logo}
-            alt="TERRA-X (OPC) Pvt Ltd logo"
-            className="h-14 w-auto"
-          />
+          <img src={logo} alt="TERRA-X (OPC) Pvt Ltd logo" className="h-14 w-auto" />
           <p className="mt-2 max-w-md text-sm text-muted-foreground">
-            Reinventing heavy machinery with autonomous intelligence — for agriculture, construction, rescue, and defense.
+            Reinventing heavy machinery with autonomous intelligence — for agriculture,
+            construction, rescue, and defense.
           </p>
         </div>
         <div className="flex flex-col items-start gap-2 text-xs text-muted-foreground sm:items-end">
-          <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> India</div>
+          <div className="flex items-center gap-2">
+            <MapPin className="h-3.5 w-3.5" /> India
+          </div>
           <div>© {new Date().getFullYear()} TERRA-X. All rights reserved.</div>
         </div>
       </div>
