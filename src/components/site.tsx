@@ -727,7 +727,7 @@ export function Products() {
           name="NAVY VERSION RAMBO-X"
           logo={navyLogo}
           subtitle="Built for Naval, Amphibious & Coastal Operations"
-          tag="Navy Amphibious Autonomous Excavator"
+          tag="Autonomous Amphibious Navy Vehicle"
           image={navyImg}
           description="NAVY VERSION RAMBO-X is a specialized amphibious autonomous platform designed for coastal defense, naval support, flood rescue, shoreline operations, and water-linked infrastructure tasks."
           features={[
