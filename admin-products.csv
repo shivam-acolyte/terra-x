@@ -1,0 +1,63 @@
+Name,Description,Price,Category
+RoVX-AI Orchard Rover,"Autonomous orchard rover for tree-level plant health scanning, fertilizer dosing, and farm monitoring.","INR 24,50,000",Agriculture Robotics
+RoVX-AI Precision Sprayer Kit,"Smart spraying attachment with AI-assisted crop targeting, flow control, and field coverage tracking.","INR 4,80,000",Agriculture Attachments
+RoVX-AI Fertilizer Dispenser,"Robotic fertilizer dispensing module for orchard rows, controlled by task maps and plant health data.","INR 5,25,000",Agriculture Attachments
+RoVX-AI Plant Health Camera,"Multispectral crop camera module for detecting stress, disease patterns, and plant health variation.","INR 2,75,000",Sensors & Vision
+RoVX-AI Orchard Mapping Pack,"Mapping package for orchard boundaries, row planning, route generation, and tree-level digital records.","INR 3,60,000",AI Software
+RoVX-AI Remote Operator Console,"Portable operator station for remote machine control, camera views, telemetry, and task assignment.","INR 6,40,000",Remote Operations
+RoVX-AI Field Battery Pack,"Rugged auxiliary battery system for extended field operations and remote agricultural deployments.","INR 3,20,000",Power Systems
+RoVX-AI Tractor Assist Module,"AI-assisted steering and route guidance module for tractor-based orchard and farm operations.","INR 7,90,000",Autonomy Systems
+RoVX-AI All-Terrain Wheel Kit,"Heavy-duty wheel and traction upgrade for muddy fields, orchard lanes, and uneven farm terrain.","INR 2,95,000",Mobility Upgrades
+RoVX-AI Farm Analytics Dashboard,"Cloud dashboard for machine activity, crop health reports, service logs, and farm productivity insights.","INR 1,20,000 / year",AI Software
+RAMBO-X Amphibious Excavator,"Autonomous amphibious excavator platform for land, water, rescue, disaster response, and defense use.","INR 1,85,00,000",Autonomous Heavy Machinery
+RAMBO-X Land Excavation Kit,"Excavation control package for autonomous digging, grading, trenching, and earthmoving operations.","INR 18,50,000",Excavation Attachments
+RAMBO-X Amphibious Track Kit,"Track and flotation upgrade for soft soil, swamp, riverbank, and flood-zone deployment.","INR 32,00,000",Mobility Upgrades
+RAMBO-X Rescue Bucket,"Specialized bucket attachment for flood debris handling, rescue clearing, and disaster-zone operations.","INR 6,75,000",Rescue Attachments
+RAMBO-X AI Navigation Stack,"Autonomous navigation package with perception, route planning, obstacle detection, and operator assist.","INR 28,00,000",Autonomy Systems
+RAMBO-X LiDAR Perception Unit,"Rugged LiDAR sensor unit for 3D mapping, worksite awareness, and autonomous movement safety.","INR 9,60,000",Sensors & Vision
+RAMBO-X Radar Safety Pack,"Radar-based proximity awareness system for low-visibility work, rescue zones, and defense operations.","INR 8,40,000",Safety Systems
+RAMBO-X Drone Integration Kit,"Drone telemetry and mission sync package for aerial scouting, mapping, and machine guidance.","INR 12,75,000",Mission Systems
+RAMBO-X Medical Evacuation Module,"Emergency rescue module for moving supplies or evacuation payloads in dangerous terrain.","INR 14,90,000",Rescue Systems
+RAMBO-X Remote Command Station,"Command station with multi-camera feed, machine telemetry, remote controls, and mission monitoring.","INR 16,50,000",Remote Operations
+Navy Version RAMBO-X Coastal Platform,"Specialized RAMBO-X variant for shoreline work, coastal defense support, and amphibious utility tasks.","INR 2,25,00,000",Navy & Coastal Systems
+Navy RAMBO-X Sonar Kit,"Sonar-ready integration package for shallow-water awareness, underwater obstacle checks, and mission support.","INR 22,00,000",Navy & Coastal Systems
+Navy RAMBO-X Saltwater Protection Pack,"Anti-corrosion protection upgrade for coastal humidity, saltwater exposure, and long-duration deployment.","INR 11,80,000",Protection Upgrades
+Navy RAMBO-X Shoreline Clearing Bucket,"Heavy-duty bucket for clearing silt, debris, shore obstacles, and flood-damaged coastal areas.","INR 8,25,000",Navy Attachments
+Navy RAMBO-X Amphibious Rescue Skid,"Rescue skid module for moving supplies, equipment, or emergency payloads in water-linked terrain.","INR 13,60,000",Rescue Systems
+Navy RAMBO-X Coastal Surveillance Pack,"Camera, radar, and telemetry package for shoreline monitoring and operator-assisted mission awareness.","INR 19,40,000",Mission Systems
+Navy RAMBO-X Night Vision Kit,"Low-light and thermal vision module for night rescue, defense support, and restricted visibility work.","INR 10,75,000",Sensors & Vision
+Navy RAMBO-X Waterproof Command Link,"Rugged communication link for reliable remote control near water, rain, and coastal conditions.","INR 7,90,000",Communication Systems
+Navy RAMBO-X Port Utility Package,"Utility package for port maintenance, dockside clearing, material movement, and coastal infrastructure work.","INR 24,50,000",Navy & Coastal Systems
+Navy RAMBO-X Flood Response Package,"Flood-response package with rescue tools, water-ready mobility support, and rapid deployment accessories.","INR 29,00,000",Rescue Systems
+Terra-X AI Control Core,"Central AI control unit for machine decision support, mission rules, sensor fusion, and safety logic.","INR 15,75,000",AI Hardware
+Terra-X Autonomy Retrofit Kit,"Retrofit package to add assisted autonomy, sensors, remote control, and operator safety features to machines.","INR 38,00,000",Autonomy Systems
+Terra-X Machine Telemetry Unit,"Telemetry module for live machine status, location, health data, operator activity, and diagnostics.","INR 3,95,000",IoT & Telemetry
+Terra-X Fleet Dashboard,"Fleet management dashboard for tracking machines, uptime, job progress, service alerts, and reports.","INR 2,40,000 / year",AI Software
+Terra-X Operator Mobile App,"Mobile app subscription for job assignment, remote monitoring, alerts, and operator workflow management.","INR 72,000 / year",AI Software
+Terra-X Voice Command Module,"Voice command interface for supported machine actions, task confirmations, and operator-assist workflows.","INR 2,10,000",Remote Operations
+Terra-X Safety Stop System,"Emergency stop package with remote shutdown, geofence limits, and operator safety trigger controls.","INR 1,85,000",Safety Systems
+Terra-X Geofence Module,"Geofence control module for restricting machine movement within approved work zones and route boundaries.","INR 2,65,000",Safety Systems
+Terra-X 360 Camera Kit,"Rugged multi-camera package for surrounding visibility, remote operation, and worksite safety.","INR 4,35,000",Sensors & Vision
+Terra-X Thermal Camera Kit,"Thermal imaging package for night operations, rescue work, human detection, and equipment monitoring.","INR 6,25,000",Sensors & Vision
+Terra-X Rugged Router,"Industrial wireless router for field connectivity, command station links, and machine data sync.","INR 1,55,000",Communication Systems
+Terra-X Edge Compute Box,"On-machine compute unit for AI inference, sensor processing, route planning, and task execution logic.","INR 9,85,000",AI Hardware
+Terra-X Rugged Display Unit,"Cabin or command station display for telemetry, camera views, route data, and mission feedback.","INR 2,45,000",Remote Operations
+Terra-X Machine Health Monitor,"Predictive maintenance module for tracking engine load, hydraulics, temperature, vibration, and alerts.","INR 3,30,000",IoT & Telemetry
+Terra-X Hydraulic Control Interface,"Control interface for autonomous or remote-assisted hydraulic movement on supported heavy machines.","INR 7,25,000",Control Systems
+Terra-X Tool Change Adapter,"Attachment adapter for switching buckets, rescue tools, farm implements, and mission-specific hardware.","INR 3,75,000",Attachments
+Terra-X Heavy Duty Grapple,"Grapple attachment for debris lifting, rescue clearing, construction handling, and field operations.","INR 5,95,000",Attachments
+Terra-X Trenching Bucket,"Precision trenching bucket for land development, irrigation lines, utility work, and controlled digging.","INR 4,50,000",Excavation Attachments
+Terra-X Grading Blade,"Grading blade attachment for leveling, site preparation, farm tracks, and terrain finishing.","INR 5,25,000",Excavation Attachments
+Terra-X Debris Clearing Rake,"Rake attachment for disaster debris, flood cleanup, field clearing, and construction-site preparation.","INR 4,20,000",Rescue Attachments
+Terra-X Field Service Plan Basic,"Annual service plan with scheduled inspection, remote diagnostics, software updates, and basic support.","INR 1,50,000 / year",Service Plans
+Terra-X Field Service Plan Pro,"Priority annual service plan with preventive maintenance, emergency support, diagnostics, and updates.","INR 4,80,000 / year",Service Plans
+Terra-X Operator Training Basic,"Training program for safe machine handling, remote control, field workflow, and emergency procedures.","INR 85,000",Training
+Terra-X Autonomy Training Advanced,"Advanced operator training for autonomous workflows, mission planning, sensor checks, and diagnostics.","INR 1,65,000",Training
+Terra-X Site Survey Service,"Professional site survey for deployment planning, machine suitability, route mapping, and risk review.","INR 1,10,000",Services
+Terra-X Custom Integration Service,"Engineering service for custom sensors, machine integrations, workflows, dashboards, and mission tools.","INR 6,00,000",Services
+Terra-X Pilot Deployment Package,"Pilot program package for testing Terra-X machines, collecting field data, and validating use cases.","INR 12,00,000",Services
+Terra-X Defense Readiness Assessment,"Assessment service for defense, rescue, and tactical machine deployment readiness and mission fit.","INR 3,50,000",Defense & Rescue
+Terra-X Flood Rescue Readiness Kit,"Rapid deployment kit with rescue attachments, checklists, emergency controls, and field support tools.","INR 9,75,000",Defense & Rescue
+Terra-X Construction Autonomy Pack,"Automation package for construction excavation, site grading, operator assist, and machine telemetry.","INR 26,00,000",Construction Automation
+Terra-X Mining Safety Monitor,"Monitoring package for hazardous machine zones, remote alerts, thermal checks, and operator safety.","INR 7,80,000",Safety Systems
+Terra-X Industrial Robotics Consulting,"Consulting service for automation strategy, robotics adoption, machine selection, and operational planning.","INR 2,25,000",Services

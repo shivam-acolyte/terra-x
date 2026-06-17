@@ -33,7 +33,7 @@ const explore = [
     to: "/products",
     icon: Bot,
     title: "Machines",
-    text: "Explore ROV-X, RAMBO-X and future product platforms.",
+    text: "Explore RoVX-AI, RAMBO-X and future product platforms.",
   },
   {
     to: "/technology",

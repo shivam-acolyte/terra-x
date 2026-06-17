@@ -1,4 +1,4 @@
-import { readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const siteUrl = "https://terraxopc.com";
@@ -33,7 +33,10 @@ const entryFile = (
   )
 ).sort((a, b) => b.size - a.size)[0].file;
 
-const html = `<!doctype html>
+function htmlForPath(path) {
+  const canonicalUrl = new URL(path, siteUrl).toString();
+
+  return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -43,11 +46,11 @@ const html = `<!doctype html>
       name="description"
       content="TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense."
     />
-    <link rel="canonical" href="${siteUrl}/" />
+    <link rel="canonical" href="${canonicalUrl}" />
     <meta property="og:title" content="TERRA-X | AI-Powered Autonomous Heavy Machinery" />
     <meta property="og:description" content="TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="${siteUrl}/" />
+    <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:site_name" content="TERRA-X" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="/assets/${styleFile}" />
@@ -58,8 +61,19 @@ const html = `<!doctype html>
   </body>
 </html>
 `;
+}
 
-await writeFile(join(distDir, "index.html"), html);
+await writeFile(join(distDir, "index.html"), htmlForPath("/"));
+
+await Promise.all(
+  sitePaths
+    .filter((path) => path !== "/")
+    .map(async (path) => {
+      const routeDir = join(distDir, path.replace(/^\//, ""));
+      await mkdir(routeDir, { recursive: true });
+      await writeFile(join(routeDir, "index.html"), htmlForPath(path));
+    }),
+);
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

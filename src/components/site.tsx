@@ -9,6 +9,7 @@ import ramboImg from "@/assets/product-rambo.jpg";
 import terraLogo from "@/assets/terra-x-logo.png.asset.json";
 import rovx from "@/assets/l3.png";
 import r1ovx from "@/assets/l1.png";
+import navyImg from "@/assets/product-navy.jpg";
 import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
 import { useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -682,7 +683,7 @@ export function Products() {
           </>
         }
       />
-      <div className="mt-14 grid gap-8 lg:grid-cols-2">
+      <div className="mt-14 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
         <ProductCard
           name="RoVX-AI"
           logo={rovx}
@@ -701,6 +702,7 @@ export function Products() {
           note='Design representation filed for "Autonomous Agricultural Vehicle for Plant Health Assessment and Fertilizer Application".'
           accent="gold"
         />
+
         <ProductCard
           name="RAMBO-X"
           logo={r1ovx}
@@ -718,6 +720,25 @@ export function Products() {
           ]}
           note='Design representation filed for "Autonomous Excavator for Land and Amphibious Operations".'
           accent="rambo"
+        />
+
+        <ProductCard
+          name="NAVY VERSION RAMBO-X"
+          logo={r1ovx}
+          subtitle="Built for Naval, Amphibious & Coastal Operations"
+          tag="Navy Amphibious Autonomous Excavator"
+          image={navyImg}
+          description="NAVY VERSION RAMBO-X is a specialized amphibious autonomous platform designed for coastal defense, naval support, flood rescue, shoreline operations, and water-linked infrastructure tasks."
+          features={[
+            "Naval and coastal operation readiness",
+            "Amphibious mobility for water-linked terrain",
+            "Flood rescue and disaster-response support",
+            "Sonar, radar, and drone integration readiness",
+            "Remote and AI-assisted mission control",
+            "Defense, rescue, and shoreline deployment",
+          ]}
+          note='Concept extension for "Autonomous Amphibious Excavator for Naval, Coastal, and Rescue Operations".'
+          accent="navy"
         />
       </div>
     </Section>
@@ -743,9 +764,10 @@ export function ProductCard({
   description: string;
   features: string[];
   note: string;
-  accent: "gold" | "rambo";
+  accent: "gold" | "rambo" | "navy";
 }) {
   const isGold = accent === "gold";
+  const isNavy = accent === "navy";
   const theme = isGold
     ? {
         border: "border-[oklch(0.72_0.15_80)]/40",
@@ -756,15 +778,25 @@ export function ProductCard({
         check: "text-[oklch(0.55_0.13_70)]",
         gradient: "from-[oklch(0.95_0.08_85)] via-background to-[oklch(0.97_0.05_80)]",
       }
-    : {
-        border: "border-[oklch(0.55_0.22_27)]/40",
-        ring: "ring-[oklch(0.55_0.22_27)]/30",
-        bg: "bg-[oklch(0.98_0.03_27)]",
-        chip: "bg-[oklch(0.95_0.06_27)] text-[oklch(0.45_0.20_27)] border-[oklch(0.55_0.22_27)]/50",
-        text: "text-[oklch(0.50_0.22_27)]",
-        check: "text-[oklch(0.55_0.22_27)]",
-        gradient: "from-[oklch(0.96_0.06_27)] via-background to-[oklch(0.98_0.04_27)]",
-      };
+    : isNavy
+      ? {
+          border: "border-[oklch(0.52_0.14_245)]/45",
+          ring: "ring-[oklch(0.52_0.14_245)]/30",
+          bg: "bg-[oklch(0.96_0.04_245)]",
+          chip: "bg-[oklch(0.92_0.07_245)] text-[oklch(0.35_0.13_245)] border-[oklch(0.52_0.14_245)]/50",
+          text: "text-[oklch(0.42_0.14_245)]",
+          check: "text-[oklch(0.48_0.15_245)]",
+          gradient: "from-[oklch(0.94_0.06_245)] via-background to-[oklch(0.97_0.04_230)]",
+        }
+      : {
+          border: "border-[oklch(0.55_0.22_27)]/40",
+          ring: "ring-[oklch(0.55_0.22_27)]/30",
+          bg: "bg-[oklch(0.98_0.03_27)]",
+          chip: "bg-[oklch(0.95_0.06_27)] text-[oklch(0.45_0.20_27)] border-[oklch(0.55_0.22_27)]/50",
+          text: "text-[oklch(0.50_0.22_27)]",
+          check: "text-[oklch(0.55_0.22_27)]",
+          gradient: "from-[oklch(0.96_0.06_27)] via-background to-[oklch(0.98_0.04_27)]",
+        };
   return (
     <article
       className={`group relative overflow-hidden rounded-2xl border ${theme.border} bg-gradient-to-br ${theme.gradient} transition hover:shadow-[var(--shadow-elevated)]`}
