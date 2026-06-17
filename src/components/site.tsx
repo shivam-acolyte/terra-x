@@ -6,10 +6,11 @@ import slideTech from "@/assets/slide-tech.jpg";
 import logo from "@/assets/l2.png";
 import rovxImg from "@/assets/product-rovx.jpg";
 import ramboImg from "@/assets/product-rambo.jpg";
+import navyImg from "@/assets/product-navy.jpg";
+import navyLogo from "@/assets/productnavybg.png";
 import terraLogo from "@/assets/terra-x-logo.png.asset.json";
 import rovx from "@/assets/l3.png";
 import r1ovx from "@/assets/l1.png";
-import navyImg from "@/assets/product-navy.jpg";
 import ramboLogo from "@/assets/rambo-x-logo.png.asset.json";
 import { useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -723,8 +724,8 @@ export function Products() {
         />
 
         <ProductCard
-          name="NAVY VERSION RAMBO-X"
-          logo={r1ovx}
+          name="NAVY VERSION RAMBO-XXXXX"
+          logo={navyLogo}
           subtitle="Built for Naval, Amphibious & Coastal Operations"
           tag="Navy Amphibious Autonomous Excavator"
           image={navyImg}
