@@ -724,7 +724,7 @@ export function Products() {
         />
 
         <ProductCard
-          name="NAVY VERSION RAMBO-XXXXX"
+          name="NAVY VERSION RAMBO-X"
           logo={navyLogo}
           subtitle="Built for Naval, Amphibious & Coastal Operations"
           tag="Navy Amphibious Autonomous Excavator"
@@ -1698,16 +1698,16 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6 lg:px-8">
         <div>
           <img src={logo} alt="TERRA-X (OPC) Pvt Ltd logo" className="h-14 w-auto" />
-          <p className="mt-2 max-w-md text-sm text-muted-foreground">
-            Reinventing heavy machinery with autonomous intelligence — for agriculture,
-            construction, rescue, and defense.
-          </p>
+         
         </div>
         <div className="flex flex-col items-start gap-2 text-xs text-muted-foreground sm:items-end">
           <div className="flex items-center gap-2">
             <MapPin className="h-3.5 w-3.5" /> India
           </div>
-          <div>© {new Date().getFullYear()} TERRA-X. All rights reserved.</div>
+          <div>
+
+<p>© 2026 TERRA-X. All rights reserved. Designed &amp; Developed by <a href="https://startupflora.com" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">StartupFlora</a></p>
+          </div>
         </div>
       </div>
     </footer>
