@@ -166,17 +166,14 @@ export function Hero() {
             Deep-Tech Robotics · Made in India
           </div>
           <h1 className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            Reinventing Heavy Machinery with{" "}
-            <span className="gradient-text">Autonomous Intelligence</span>
+            Autonomous AI Excavators Built for the{" "}
+            <span className="gradient-text">Real World</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-            AI-powered autonomous excavators designed for agriculture, construction, rescue, and
-            defense applications.
+            AI-powered autonomous excavators designed for agriculture, construction, rescue, and defense applications.
           </p>
           <p className="mt-4 max-w-xl text-base text-muted-foreground/80">
-            TERRA-X is building next-generation heavy machinery that reduces human dependency,
-            improves safety, and enables precision operations across land, farms, and challenging
-            environments.
+            TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
@@ -489,11 +486,10 @@ export function About() {
         eyebrow="Who We Are"
         title={
           <>
-            Building intelligent machines for the{" "}
-            <span className="gradient-text">future of work</span>
+            About TERRA-X <span className="gradient-text">Autonomous Heavy Machinery Company</span>
           </>
         }
-        subtitle="TERRA-X is a deep-tech manufacturing startup developing AI-powered autonomous heavy machines for construction, agriculture, rescue, and defense — transforming traditional excavators into smart robotic platforms using AI, IoT, LiDAR, cameras, robotics, and remote-control systems."
+        subtitle="Learn about TERRA-X's mission to make autonomous AI excavation safe, accessible, and reliable across construction, agriculture, rescue, and defense."
       />
 
       <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -520,7 +516,7 @@ export function About() {
         <VMCard
           tag="Mission"
           icon={Target}
-          text="To reduce human dependency, improve safety, and enable AI-driven efficiency across industries."
+          text="●	Add an Our Mission paragraph stating plainly what problem you solve and for whom."
           accent="safety"
         />
       </div>
@@ -680,7 +676,7 @@ export function Products() {
         eyebrow="Products / Machines"
         title={
           <>
-            Our <span className="gradient-text">Autonomous Machine</span> Platforms
+            TERRA-X Products  <span className="gradient-text">Autonomous Excavators & Heavy Machinery</span>
           </>
         }
       />
@@ -968,7 +964,7 @@ export function TechStack() {
         eyebrow="Technology Stack"
         title={
           <>
-            Technology Built Into <span className="gradient-text-rainbow">Every Machine</span>
+            TERRA-X Technology  <span className="gradient-text-rainbow">How Autonomous Excavation Works</span>
           </>
         }
       />
@@ -1115,11 +1111,10 @@ export function Market() {
         eyebrow="Market Opportunity"
         title={
           <>
-            A Large Opportunity Across{" "}
-            <span className="gradient-text-sunset">Agriculture, Construction & Automation</span>
+            The Autonomous Heavy Machinery Market  <span className="gradient-text-sunset">TERRA-X</span>
           </>
         }
-        subtitle="TERRA-X operates at the intersection of precision agriculture, construction equipment, autonomous machinery, and industrial robotics — addressing labor shortages, safety risks, climate disasters, and the need for precision automation."
+        subtitle="An overview of the market for autonomous excavators and AI-powered heavy machinery across construction, agriculture, rescue, and defense."
       />
       <div className="mt-14 grid items-end gap-6 md:grid-cols-3">
         {tiers.map((t, i) => {
@@ -1321,7 +1316,7 @@ export function Strategy() {
         eyebrow="Market Strategy"
         title={
           <>
-            Our <span className="gradient-text">Go-To-Market</span> Strategy
+            TERRA-X Strategy  <span className="gradient-text">Our Approach to Autonomous Heavy Machinery</span>
           </>
         }
       />
@@ -1487,7 +1482,7 @@ export function Founder() {
         eyebrow="Founder"
         title={
           <>
-            Led by <span className="gradient-text">Technical Innovation</span>
+            <span className="gradient-text">Sooraj Anil</span>
           </>
         }
       />
@@ -1499,7 +1494,7 @@ export function Founder() {
                 <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-to-br from-electric to-[oklch(0.45_0.18_240)] text-3xl font-black text-primary-foreground glow-electric">
                   SA
                 </div>
-                <div className="mt-4 text-lg font-bold">Sooraj Anil</div>
+                <div className="mt-4 text-lg font-bold">Sooraj Anil — Founder of TERRA-X</div>
                 <div className="text-xs font-mono uppercase tracking-widest text-electric">
                   Founder
                 </div>
@@ -1509,11 +1504,7 @@ export function Founder() {
         </div>
         <div>
           <p className="text-lg text-foreground/90 leading-relaxed">
-            <span className="font-semibold text-foreground">Sooraj Anil</span> is the founder CEO &
-            Director of TERRA -X (OPC) PRIVATE LIMITED with a strong record of transforming advanced
-            machine concepts into the protected intellectual property. He has been multi round
-            finalist in the IIT palakad DISHA program and brings a rare combination of technical
-            rigor , disruptive thinking, deep interest in industrial innovation.
+            <span className="font-semibold text-foreground">Sooraj Anil</span> founder of TERRA-X, building AI-powered autonomous excavators for construction, agriculture, rescue, and defense.
           </p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {points.map((p) => (
@@ -1546,12 +1537,10 @@ export function Contact() {
             <Rocket className="h-4 w-4" /> Let's Build Together
           </div>
           <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-            Build the Future of Autonomous Machinery with{" "}
-            <span className="gradient-text">Terra-X</span>
+            Contact TERRA-X<span className="gradient-text">Request a Demo or Get Support</span>
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            For partnerships, investment, pilots, and strategic collaborations, connect with
-            Terra-X.
+            Get in touch with TERRA-X for demo requests, partnership inquiries, or support.
           </p>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -1691,6 +1680,97 @@ export function Testimonials() {
   );
 }
 
+/* ---------------------------- FAQs ---------------------------- */
+export function FAQs() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      question: "How much does an autonomous excavator cost?",
+      answer:
+        "Provide a real number or range once pricing is finalized. A specific answer here — even a range — significantly improves both featured snippet eligibility and AI citation likelihood. Avoid leaving this vague if possible.",
+    },
+    {
+      question: "Is an autonomous excavator safe to use on an active job site?",
+      answer:
+        "Answer directly with real safety data, certifications, or protocols once available — for example, sensor redundancy, fail-safe stop systems, or compliance with a specific safety standard.",
+    },
+    {
+      question: "Do I need special training to operate a TERRA-X machine?",
+      answer:
+        "Answer plainly — for example: 'No specialized heavy-equipment license is required; supervisors complete a short onboarding program before overseeing operations.' Replace with your actual onboarding process.",
+    },
+    {
+      question: "Can TERRA-X machines operate without an internet connection?",
+      answer:
+        "Answer directly based on your actual architecture — e.g., onboard processing vs. cloud-dependent, and what happens if connectivity drops.",
+    },
+    {
+      question: "How is this different from a remote-controlled excavator?",
+      answer:
+        "Unlike a remote-controlled machine, which still requires a human to actively steer every movement, a TERRA-X autonomous excavator plans and executes its own digging sequence, with a human supervising rather than operating it in real time.",
+    },
+  ];
+
+  const toggleFAQ = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <Section id="faqs" className="border-y border-border bg-card/20">
+      <SectionHeader
+        // eyebrow="FAQs"
+        title={
+          <>
+            <span className="gradient-text">Frequently Asked Questions</span>
+          </>
+        }
+        // subtitle="Common questions about TERRA-X autonomous machines, operations, safety, and technology."
+        center
+      />
+      <div className="mt-8 mx-auto max-w-3xl space-y-3">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className="group rounded-xl border border-border bg-background/60 transition hover:border-electric"
+          >
+            <button
+              type="button"
+              onClick={() => toggleFAQ(index)}
+              className="flex w-full items-center justify-between gap-4 p-6 text-left"
+              aria-expanded={openIndex === index}
+            >
+              <span className="text-base font-semibold leading-snug pr-4">
+                {faq.question}
+              </span>
+              <ChevronRight
+                className={`h-5 w-5 shrink-0 text-electric transition-transform duration-300 ${
+                  openIndex === index ? "rotate-90" : ""
+                }`}
+              />
+            </button>
+            <div
+              className={`grid transition-all duration-300 ease-in-out ${
+                openIndex === index
+                  ? "grid-rows-[1fr] opacity-100"
+                  : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="px-6 pb-6 pt-0">
+                  <p className="text-sm leading-relaxed text-muted-foreground border-t border-border pt-4">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 /* ---------------------------- FOOTER ---------------------------- */
 export function Footer() {
   return (
@@ -1706,7 +1786,7 @@ export function Footer() {
           </div>
           <div>
 
-<p>© 2026 TERRA-X. All rights reserved. Designed &amp; Developed by <a href="https://startupflora.com" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">StartupFlora</a></p>
+<p>© 2026 TERRA-X. All rights reserved. Designed &amp; Developed by <a href="https://startupflora.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">StartupFlora</a></p>
           </div>
         </div>
       </div>

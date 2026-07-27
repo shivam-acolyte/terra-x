@@ -4,6 +4,7 @@ import {
   Competitive,
   Contact,
   Customers,
+  FAQs,
   Footer,
   Founder,
   Hero,
@@ -21,6 +22,68 @@ import {
 } from "@/components/site";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Bot, Cpu, Layers, Phone, Sparkles, Target } from "lucide-react";
+import { useEffect } from "react";
+
+// Page metadata configuration
+const pageMetadata = {
+  "/": {
+    title: "TERRA-X | Autonomous AI Excavators for Construction, Agriculture & Rescue",
+    description: "See how TERRA-X's autonomous excavators cut labor costs and improve safety across construction, farming, and rescue operations. Get a demo.",
+  },
+  "/about": {
+    title: "About TERRA-X | Autonomous Heavy Machinery Company",
+    description: "Learn about TERRA-X's mission to make autonomous AI excavation safe, accessible, and reliable across construction, agriculture, rescue, and defense.",
+  },
+  "/products": {
+    title: "TERRA-X Products | Autonomous Excavators & Heavy Machinery",
+    description: "Explore TERRA-X's autonomous excavator models built for construction, agriculture, rescue, and defense operations.",
+  },
+  "/technology": {
+    title: "TERRA-X Technology | How Autonomous Excavation Works",
+    description: "A technical look at the AI, sensors, and planning systems behind TERRA-X's autonomous excavators.",
+  },
+  "/market": {
+    title: "The Autonomous Heavy Machinery Market | TERRA-X",
+    description: "An overview of the market for autonomous excavators and AI-powered heavy machinery across construction, agriculture, rescue, and defense.",
+  },
+  "/strategy": {
+    title: "TERRA-X Strategy | Our Approach to Autonomous Heavy Machinery",
+    description: "How TERRA-X is building and scaling autonomous excavators across construction, agriculture, rescue, and defense.",
+  },
+  "/founder": {
+    title: "Sooraj Anil — Founder of TERRA-X",
+    description: "Meet Sooraj Anil, founder of TERRA-X, building AI-powered autonomous excavators for construction, agriculture, rescue, and defense.",
+  },
+  "/contact": {
+    title: "Contact TERRA-X | Request a Demo or Get Support",
+    description: "Get in touch with TERRA-X for demo requests, partnership inquiries, or support.",
+  },
+} as const;
+
+// Helper function to update page metadata
+function updatePageMetadata(path: string) {
+  const cleanPath = path.replace(/\/+$/, "") || "/";
+  const metadata = pageMetadata[cleanPath as keyof typeof pageMetadata];
+  
+  if (metadata) {
+    document.title = metadata.title;
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", metadata.description);
+    }
+    
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute("content", metadata.title);
+    }
+    
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute("content", metadata.description);
+    }
+  }
+}
 
 const explore = [
   {
@@ -111,6 +174,7 @@ function HomePage() {
       <ExploreSection />
       <Testimonials />
       <Contact />
+      <FAQs />
     </>
   );
 }
@@ -202,6 +266,11 @@ function NotFoundPage() {
 
 function CurrentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
+
+  // Update page metadata when route changes
+  useEffect(() => {
+    updatePageMetadata(path);
+  }, [path]);
 
   switch (path) {
     case "/":
