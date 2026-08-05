@@ -11,6 +11,8 @@ const sitePaths = [
   "/strategy",
   "/founder",
   "/contact",
+  "/blog",
+  "/admin/blogs",
 ];
 const distDir = "dist";
 const assetsDir = join(distDir, "assets");

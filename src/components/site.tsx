@@ -77,6 +77,7 @@ export const navLinks = [
   { to: "/technology", label: "Technology" },
   { to: "/market", label: "Market" },
   { to: "/strategy", label: "Strategy" },
+  { to: "/blog", label: "Blog" },
   { to: "/founder", label: "Founder" },
   { to: "/contact", label: "Contact" },
 ] as const;

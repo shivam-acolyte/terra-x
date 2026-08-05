@@ -20,8 +20,9 @@ import {
   Testimonials,
   Traction,
 } from "@/components/site";
+import { BlogAdminPage, BlogListPage, BlogSinglePage } from "@/components/blog";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Bot, Cpu, Layers, Phone, Sparkles, Target } from "lucide-react";
+import { ArrowRight, Bot, Cpu, FileText, Layers, Phone, Sparkles, Target } from "lucide-react";
 import { useEffect } from "react";
 
 // Page metadata configuration
@@ -57,6 +58,14 @@ const pageMetadata = {
   "/contact": {
     title: "Contact TERRA-X | Request a Demo or Get Support",
     description: "Get in touch with TERRA-X for demo requests, partnership inquiries, or support.",
+  },
+  "/blog": {
+    title: "TERRA-X Blog | Autonomous Heavy Machinery Insights",
+    description: "Read TERRA-X updates, robotics insights, autonomous excavator articles, and heavy machinery innovation notes.",
+  },
+  "/admin/blogs": {
+    title: "TERRA-X Blog Admin",
+    description: "Manage TERRA-X blog posts.",
   },
 } as const;
 
@@ -121,6 +130,12 @@ const explore = [
     icon: Phone,
     title: "Contact",
     text: "Connect for pilots, partnerships, investment and collaboration.",
+  },
+  {
+    to: "/blog",
+    icon: FileText,
+    title: "Blog",
+    text: "Read product updates, robotics insights and field notes.",
   },
 ] as const;
 
@@ -242,6 +257,14 @@ function ContactPage() {
   );
 }
 
+function BlogPage() {
+  return <BlogListPage />;
+}
+
+function AdminBlogsPage() {
+  return <BlogAdminPage />;
+}
+
 function NotFoundPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 pt-24">
@@ -266,10 +289,11 @@ function NotFoundPage() {
 
 function CurrentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  const blogSlug = path.startsWith("/blog/") ? path.replace("/blog/", "") : "";
 
   // Update page metadata when route changes
   useEffect(() => {
-    updatePageMetadata(path);
+    updatePageMetadata(blogSlug ? "/blog" : path);
   }, [path]);
 
   switch (path) {
@@ -289,7 +313,14 @@ function CurrentPage() {
       return <FounderPage />;
     case "/contact":
       return <ContactPage />;
+    case "/blog":
+      return <BlogPage />;
+    case "/admin/blogs":
+      return <AdminBlogsPage />;
     default:
+      if (blogSlug) {
+        return <BlogSinglePage slug={blogSlug} />;
+      }
       return <NotFoundPage />;
   }
 }
