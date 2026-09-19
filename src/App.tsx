@@ -63,9 +63,17 @@ const pageMetadata = {
     title: "TERRA-X Blog | Autonomous Heavy Machinery Insights",
     description: "Read TERRA-X updates, robotics insights, autonomous excavator articles, and heavy machinery innovation notes.",
   },
+  "/admin": {
+    title: "TERRA-X Admin Console",
+    description: "TERRA-X Admin Portal for managing blogs and system users.",
+  },
   "/admin/blogs": {
-    title: "TERRA-X Blog Admin",
+    title: "TERRA-X Blog Management",
     description: "Manage TERRA-X blog posts.",
+  },
+  "/admin/users": {
+    title: "TERRA-X User Management",
+    description: "Manage TERRA-X admin users and credentials.",
   },
 } as const;
 
@@ -315,8 +323,11 @@ function CurrentPage() {
       return <ContactPage />;
     case "/blog":
       return <BlogPage />;
+    case "/admin":
     case "/admin/blogs":
-      return <AdminBlogsPage />;
+      return <BlogAdminPage defaultTab="blogs" />;
+    case "/admin/users":
+      return <BlogAdminPage defaultTab="users" />;
     default:
       if (blogSlug) {
         return <BlogSinglePage slug={blogSlug} />;
@@ -326,9 +337,12 @@ function CurrentPage() {
 }
 
 export default function App() {
+  const path = typeof window !== "undefined" ? window.location.pathname.replace(/\/+$/, "") || "/" : "/";
+  const isAdminPage = path.startsWith("/admin");
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+      {!isAdminPage && <Nav />}
       <main>
         <CurrentPage />
       </main>

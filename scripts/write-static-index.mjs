@@ -12,7 +12,9 @@ const sitePaths = [
   "/founder",
   "/contact",
   "/blog",
+  "/admin",
   "/admin/blogs",
+  "/admin/users",
 ];
 const distDir = "dist";
 const assetsDir = join(distDir, "assets");
@@ -49,6 +51,8 @@ function htmlForPath(path) {
       content="TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense."
     />
     <link rel="canonical" href="${canonicalUrl}" />
+    <meta name="google-site-verification" content="google35c1a4c8212447cc.html" />
+    <meta name="google-site-verification" content="google35c1a4c8212447cc" />
     <meta property="og:title" content="TERRA-X | AI-Powered Autonomous Heavy Machinery" />
     <meta property="og:description" content="TERRA-X builds AI-powered autonomous excavators and robotic heavy machines for agriculture, construction, rescue, and defense." />
     <meta property="og:type" content="website" />

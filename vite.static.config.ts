@@ -14,6 +14,10 @@ export default defineConfig({
       strict: true,
       allow: [process.cwd()],
     },
+    proxy: {
+      "/api": `http://localhost:${process.env.PORT || 3002}`,
+      "/uploads": `http://localhost:${process.env.PORT || 3002}`,
+    },
   },
   preview: {
     host: "0.0.0.0",
@@ -21,7 +25,7 @@ export default defineConfig({
     strictPort: true,
   },
   optimizeDeps: {
-    noDiscovery: true,
+    include: ["react", "react-dom", "react-dom/client"],
   },
   build: {
     outDir: "dist",
