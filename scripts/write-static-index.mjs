@@ -75,9 +75,18 @@ await Promise.all(
   sitePaths
     .filter((path) => path !== "/")
     .map(async (path) => {
-      const routeDir = join(distDir, path.replace(/^\//, ""));
+      const cleanPath = path.replace(/^\//, "");
+      const htmlContent = htmlForPath(path);
+      
+      // Write route/index.html
+      const routeDir = join(distDir, cleanPath);
       await mkdir(routeDir, { recursive: true });
-      await writeFile(join(routeDir, "index.html"), htmlForPath(path));
+      await writeFile(join(routeDir, "index.html"), htmlContent);
+
+      // Also write route.html for direct extension resolution
+      if (!cleanPath.includes("/")) {
+        await writeFile(join(distDir, `${cleanPath}.html`), htmlContent);
+      }
     }),
 );
 

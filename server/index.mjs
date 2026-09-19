@@ -451,6 +451,33 @@ app.delete("/api/admin/users/:id", requireAdmin, async (request, response, next)
   } catch (error) { next(error); }
 });
 
+// Serve static production build files
+app.use(
+  express.static(distDir, {
+    extensions: ["html"],
+    index: "index.html",
+    dotfiles: "ignore",
+    redirect: false,
+    maxAge: "1d",
+  })
+);
+
+// SPA fallback for frontend client-side routes
+app.use((request, response, next) => {
+  if (request.method === "GET" && !request.path.startsWith("/api/")) {
+    const indexPath = path.join(distDir, "index.html");
+    return response.sendFile(indexPath, (err) => {
+      if (err) {
+        if (!response.headersSent) {
+          response.status(404).send("Not found");
+        }
+      }
+    });
+  }
+  next();
+});
+
+// Global Error Handler (must be after routes & static handlers)
 app.use((error, _request, response, _next) => {
   if (error instanceof multer.MulterError) return response.status(400).json({ error: error.message });
   if (error?.code === "23505") {
@@ -459,11 +486,11 @@ app.use((error, _request, response, _next) => {
     }
     return response.status(409).json({ error: "A record with this unique identifier already exists." });
   }
-  console.error(error);
-  response.status(500).json({ error: error instanceof Error ? error.message : "Server error." });
+  console.error("Server Error:", error);
+  if (!response.headersSent) {
+    response.status(500).json({ error: error instanceof Error ? error.message : "Server error." });
+  }
 });
-app.use(express.static(distDir));
-app.get("/{*path}", (_request, response) => response.sendFile(path.join(distDir, "index.html")));
 
 async function initialise() {
   await pool.query(`create extension if not exists pgcrypto;
