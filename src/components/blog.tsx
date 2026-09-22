@@ -355,6 +355,65 @@ export function BlogSinglePage({ slug }: { slug: string }) {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  // Dynamically set canonical and meta tags for the blog page
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const defaultCanonical = `https://terraxopc.com/blog/${slug}`;
+    const canonical = post?.canonical_url?.trim() || defaultCanonical;
+    const title = post?.meta_title || post?.title || "TERRA-X Blog | Autonomous Heavy Machinery Insights";
+    const desc = post?.meta_description || post?.excerpt || "Read TERRA-X updates, robotics insights, autonomous excavator articles, and heavy machinery innovation notes.";
+
+    document.title = title;
+
+    let linkCanonical = document.querySelector('link[rel="canonical"]');
+    if (!linkCanonical) {
+      linkCanonical = document.createElement("link");
+      linkCanonical.setAttribute("rel", "canonical");
+      document.head.appendChild(linkCanonical);
+    }
+    linkCanonical.setAttribute("href", canonical);
+
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (!ogUrl) {
+      ogUrl = document.createElement("meta");
+      ogUrl.setAttribute("property", "og:url");
+      document.head.appendChild(ogUrl);
+    }
+    ogUrl.setAttribute("content", canonical);
+
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", desc);
+
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", title);
+
+    let ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", desc);
+
+    if (post?.cover_image_url || post?.og_image_url) {
+      let ogImage = document.querySelector('meta[property="og:image"]');
+      if (!ogImage) {
+        ogImage = document.createElement("meta");
+        ogImage.setAttribute("property", "og:image");
+        document.head.appendChild(ogImage);
+      }
+      ogImage.setAttribute("content", post.og_image_url || post.cover_image_url || "");
+    }
+
+    let robotsMeta = document.querySelector('meta[name="robots"]');
+    if (post?.no_index) {
+      if (!robotsMeta) {
+        robotsMeta = document.createElement("meta");
+        robotsMeta.setAttribute("name", "robots");
+        document.head.appendChild(robotsMeta);
+      }
+      robotsMeta.setAttribute("content", "noindex, nofollow");
+    } else if (robotsMeta) {
+      robotsMeta.remove();
+    }
+  }, [slug, post]);
+
   const handleShare = () => {
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.href);

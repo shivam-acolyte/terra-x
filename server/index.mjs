@@ -4,7 +4,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import multer from "multer";
 import pg from "pg";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -462,17 +462,70 @@ app.use(
   })
 );
 
-// SPA fallback for frontend client-side routes
-app.use((request, response, next) => {
+// SPA fallback for frontend client-side routes with dynamic canonical and meta tags
+app.use(async (request, response, next) => {
   if (request.method === "GET" && !request.path.startsWith("/api/")) {
     const indexPath = path.join(distDir, "index.html");
-    return response.sendFile(indexPath, (err) => {
-      if (err) {
-        if (!response.headersSent) {
-          response.status(404).send("Not found");
+    try {
+      let html = await readFile(indexPath, "utf-8");
+      const cleanPath = request.path.replace(/\/+$/, "") || "/";
+      let canonicalUrl = `https://terraxopc.com${cleanPath === "/" ? "/" : cleanPath}`;
+      let pageTitle = "";
+      let pageDescription = "";
+
+      if (cleanPath.startsWith("/blog/")) {
+        const slug = cleanPath.replace("/blog/", "");
+        try {
+          const { rows } = await pool.query(
+            "SELECT title, meta_title, meta_description, canonical_url FROM blog_posts WHERE slug = $1 AND status = 'published' LIMIT 1",
+            [slug]
+          );
+          if (rows.length > 0) {
+            const post = rows[0];
+            canonicalUrl = post.canonical_url?.trim() || `https://terraxopc.com/blog/${slug}`;
+            pageTitle = post.meta_title?.trim() || post.title?.trim() || "";
+            pageDescription = post.meta_description?.trim() || "";
+          }
+        } catch (dbErr) {
+          console.warn("Could not query post for dynamic canonical fallback:", dbErr.message);
         }
       }
-    });
+
+      // Dynamically replace canonical and og:url in served HTML
+      html = html.replace(
+        /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
+        `<link rel="canonical" href="${canonicalUrl}" />`
+      );
+      html = html.replace(
+        /<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/i,
+        `<meta property="og:url" content="${canonicalUrl}" />`
+      );
+
+      if (pageTitle) {
+        html = html.replace(/<title>[^<]*<\/title>/i, `<title>${pageTitle}</title>`);
+        html = html.replace(
+          /<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i,
+          `<meta property="og:title" content="${pageTitle}" />`
+        );
+      }
+      if (pageDescription) {
+        html = html.replace(
+          /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i,
+          `<meta name="description" content="${pageDescription}" />`
+        );
+        html = html.replace(
+          /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i,
+          `<meta property="og:description" content="${pageDescription}" />`
+        );
+      }
+
+      response.setHeader("Content-Type", "text/html; charset=utf-8");
+      return response.send(html);
+    } catch (err) {
+      if (!response.headersSent) {
+        response.status(404).send("Not found");
+      }
+    }
   }
   next();
 });

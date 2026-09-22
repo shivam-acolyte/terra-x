@@ -77,28 +77,62 @@ const pageMetadata = {
   },
 } as const;
 
+const SITE_URL = "https://terraxopc.com";
+
+export function updatePageCanonical(url: string) {
+  if (typeof document === "undefined") return;
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", url);
+
+  let ogUrl = document.querySelector('meta[property="og:url"]');
+  if (!ogUrl) {
+    ogUrl = document.createElement("meta");
+    ogUrl.setAttribute("property", "og:url");
+    document.head.appendChild(ogUrl);
+  }
+  ogUrl.setAttribute("content", url);
+}
+
 // Helper function to update page metadata
-function updatePageMetadata(path: string) {
+export function updatePageMetadata(path: string, customCanonical?: string) {
+  if (typeof document === "undefined") return;
   const cleanPath = path.replace(/\/+$/, "") || "/";
   const metadata = pageMetadata[cleanPath as keyof typeof pageMetadata];
   
+  const canonicalUrl = customCanonical || (cleanPath === "/" ? `${SITE_URL}/` : `${SITE_URL}${cleanPath}`);
+  updatePageCanonical(canonicalUrl);
+
   if (metadata) {
     document.title = metadata.title;
     
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute("content", metadata.description);
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement("meta");
+      metaDescription.setAttribute("name", "description");
+      document.head.appendChild(metaDescription);
     }
+    metaDescription.setAttribute("content", metadata.description);
     
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute("content", metadata.title);
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (!ogTitle) {
+      ogTitle = document.createElement("meta");
+      ogTitle.setAttribute("property", "og:title");
+      document.head.appendChild(ogTitle);
     }
+    ogTitle.setAttribute("content", metadata.title);
     
-    const ogDescription = document.querySelector('meta[property="og:description"]');
-    if (ogDescription) {
-      ogDescription.setAttribute("content", metadata.description);
+    let ogDescription = document.querySelector('meta[property="og:description"]');
+    if (!ogDescription) {
+      ogDescription = document.createElement("meta");
+      ogDescription.setAttribute("property", "og:description");
+      document.head.appendChild(ogDescription);
     }
+    ogDescription.setAttribute("content", metadata.description);
   }
 }
 
@@ -299,10 +333,12 @@ function CurrentPage() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   const blogSlug = path.startsWith("/blog/") ? path.replace("/blog/", "") : "";
 
-  // Update page metadata when route changes
+  // Update page metadata when route changes (BlogSinglePage handles blog post metadata)
   useEffect(() => {
-    updatePageMetadata(blogSlug ? "/blog" : path);
-  }, [path]);
+    if (!blogSlug) {
+      updatePageMetadata(path);
+    }
+  }, [path, blogSlug]);
 
   switch (path) {
     case "/":
