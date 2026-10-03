@@ -76,7 +76,7 @@ import {
   X,
 } from "lucide-react";
 import logo from "@/assets/l2.png";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 const emptyForm: BlogFormValues = {
   title: "",
@@ -151,8 +151,20 @@ function ConfigMissing() {
 function renderBlogHtml(content: string): string {
   if (!content) return "";
 
-  // Convert markdown links, bold, italics, quotes, headings
+  // Convert markdown images first: ![alt](url) -> sleek responsive rectangular card
   let formatted = content
+    .replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      (_match, alt, src) =>
+        `\n\n<figure class="my-8 overflow-hidden rounded-2xl border border-border/80 bg-card/60 shadow-soft transition hover:border-electric/30">` +
+        `<div class="relative w-full overflow-hidden bg-black/10 aspect-[16/9] sm:aspect-[21/9] max-h-[520px] flex items-center justify-center">` +
+        `<img src="${src.trim()}" alt="${alt.trim() || "Terra-X Article Image"}" class="h-full w-full object-cover" loading="lazy" />` +
+        `</div>` +
+        (alt && alt.trim()
+          ? `<figcaption class="border-t border-border/60 bg-card/90 px-4 py-2.5 text-center text-xs font-mono text-muted-foreground">${alt.trim()}</figcaption>`
+          : "") +
+        `</figure>\n\n`
+    )
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
     .replace(
@@ -166,6 +178,9 @@ function renderBlogHtml(content: string): string {
       /^> (.*$)/gim,
       '<blockquote class="border-l-4 border-electric pl-4 italic text-muted-foreground my-4">$1</blockquote>'
     );
+
+  // Normalize figures/blocks so they stand as their own blocks
+  formatted = formatted.replace(/\s*(<figure[\s\S]*?<\/figure>)\s*/g, "\n\n$1\n\n");
 
   // Split into paragraph/element blocks separated by blank lines
   const blocks = formatted.split(/\n\s*\n/);
@@ -209,7 +224,7 @@ export function BlogBody({ content }: { content: string }) {
 
   return (
     <div
-      className="prose prose-invert max-w-none space-y-4 text-base leading-8 text-foreground/90 font-normal [&_h1]:text-3xl [&_h1]:font-black [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-xl [&_h3]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_blockquote]:border-l-4 [&_blockquote]:border-electric [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_table]:w-full [&_table]:border [&_table]:border-border [&_table]:my-6 [&_th]:border [&_th]:border-border [&_th]:bg-card [&_th]:p-3 [&_th]:text-left [&_th]:font-bold [&_td]:border [&_td]:border-border [&_td]:p-3 [&_iframe]:w-full [&_iframe]:rounded-xl [&_iframe]:my-6 [&_img]:rounded-xl [&_img]:border [&_img]:border-border [&_img]:my-6 [&_a]:text-electric [&_a]:underline hover:[&_a]:text-electric/80 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:bg-card [&_pre]:overflow-x-auto"
+      className="prose prose-invert max-w-none space-y-4 text-base leading-8 text-foreground/90 font-normal [&_h1]:text-3xl [&_h1]:font-black [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-xl [&_h3]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_blockquote]:border-l-4 [&_blockquote]:border-electric [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_table]:w-full [&_table]:border [&_table]:border-border [&_table]:my-6 [&_th]:border [&_th]:border-border [&_th]:bg-card [&_th]:p-3 [&_th]:text-left [&_th]:font-bold [&_td]:border [&_td]:border-border [&_td]:p-3 [&_iframe]:w-full [&_iframe]:rounded-xl [&_iframe]:my-6 [&_img]:w-full [&_img]:max-h-[520px] [&_img]:object-cover [&_img]:rounded-2xl [&_img]:border [&_img]:border-border/80 [&_img]:shadow-soft [&_img]:my-6 [&_figure]:my-8 [&_figure]:overflow-hidden [&_figure]:rounded-2xl [&_figure]:border [&_figure]:border-border/80 [&_figure]:bg-card/60 [&_figure]:shadow-soft [&_figure_img]:my-0 [&_figure_img]:border-0 [&_figure_img]:rounded-none [&_figcaption]:border-t [&_figcaption]:border-border/60 [&_figcaption]:bg-card/90 [&_figcaption]:px-4 [&_figcaption]:py-2.5 [&_figcaption]:text-center [&_figcaption]:text-xs [&_figcaption]:font-mono [&_figcaption]:text-muted-foreground [&_a]:text-electric [&_a]:underline hover:[&_a]:text-electric/80 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:bg-card [&_pre]:overflow-x-auto"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -692,6 +707,9 @@ function PostForm({
   const [pdfSuccess, setPdfSuccess] = useState("");
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [error, setError] = useState("");
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const contentImageInputRef = useRef<HTMLInputElement>(null);
+  const [contentUploading, setContentUploading] = useState(false);
 
   useEffect(() => {
     if (!selectedPost) {
@@ -892,8 +910,125 @@ function PostForm({
     }
   }
 
+  function insertBetweenContent(snippet: string) {
+    const textarea = contentTextareaRef.current;
+    const currentVal = form.content;
+    let start = currentVal.length;
+    let end = currentVal.length;
+    if (textarea) {
+      start = textarea.selectionStart;
+      end = textarea.selectionEnd;
+    }
+
+    const before = currentVal.slice(0, start);
+    const after = currentVal.slice(end);
+
+    const prefix = before.length === 0 ? "" : before.endsWith("\n\n") ? "" : before.endsWith("\n") ? "\n" : "\n\n";
+    const suffix = after.length === 0 ? "" : after.startsWith("\n\n") ? "" : after.startsWith("\n") ? "\n" : "\n\n";
+
+    const newContent = `${before}${prefix}${snippet}${suffix}${after}`;
+    setField("content", newContent);
+
+    const newPos = start + prefix.length + snippet.length;
+    setTimeout(() => {
+      if (textarea) {
+        textarea.focus();
+        textarea.setSelectionRange(newPos, newPos);
+      }
+    }, 10);
+  }
+
   function insertContent(prefix: string, suffix = "") {
-    setField("content", `${form.content}${form.content ? "\n" : ""}${prefix}${suffix}`);
+    const textarea = contentTextareaRef.current;
+    if (!textarea) {
+      setField("content", `${form.content}${form.content ? "\n" : ""}${prefix}${suffix}`);
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentVal = form.content;
+    const selected = currentVal.substring(start, end);
+    const replacement = `${prefix}${selected || ""}${suffix}`;
+    const newContent = currentVal.substring(0, start) + replacement + currentVal.substring(end);
+    setField("content", newContent);
+    setTimeout(() => {
+      textarea.focus();
+      const newCursor = start + prefix.length + (selected ? selected.length : 0);
+      textarea.setSelectionRange(newCursor, newCursor);
+    }, 10);
+  }
+
+  async function uploadOrConvertImage(file: File): Promise<string> {
+    if (token) {
+      try {
+        const publicUrl = await uploadBlogImage(file, token);
+        if (publicUrl) return publicUrl;
+      } catch (err) {
+        console.warn("Backend image upload failed or unavailable, fallback to data URL:", err);
+      }
+    }
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject(new Error("Failed to process image file"));
+        }
+      };
+      reader.onerror = () => reject(new Error("Failed to read image file"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function processAndInsertImage(file: File) {
+    setContentUploading(true);
+    setError("");
+    try {
+      const imageUrl = await uploadOrConvertImage(file);
+      const cleanName = file.name ? file.name.replace(/\.[^.]+$/, "") : "Article image";
+      const altText = cleanName.toLowerCase() === "image" ? "Terra-X Article Image" : cleanName;
+      insertBetweenContent(`![${altText}](${imageUrl})`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload and insert image");
+    } finally {
+      setContentUploading(false);
+    }
+  }
+
+  async function handleContentImageFileInput(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await processAndInsertImage(file);
+    event.target.value = "";
+  }
+
+  async function handleContentPaste(event: React.ClipboardEvent<HTMLTextAreaElement>) {
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.indexOf("image") !== -1) {
+        const file = item.getAsFile();
+        if (file) {
+          event.preventDefault();
+          await processAndInsertImage(file);
+          break;
+        }
+      }
+    }
+  }
+
+  async function handleContentDrop(event: React.DragEvent<HTMLTextAreaElement>) {
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const imageFile = Array.from(files).find((f) => f.type.startsWith("image/"));
+      if (imageFile) {
+        event.preventDefault();
+        await processAndInsertImage(imageFile);
+      }
+    }
   }
 
   function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
@@ -1441,6 +1576,13 @@ function PostForm({
             <div className="overflow-hidden rounded-md border border-input bg-background">
               {editorTab === "write" ? (
                 <>
+                  <input
+                    type="file"
+                    ref={contentImageInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleContentImageFileInput}
+                  />
                   <div className="flex flex-wrap items-center gap-1 border-b border-input bg-card px-2 py-2">
                     <Button type="button" variant="ghost" size="sm" onClick={() => insertContent("## Heading Title")}>
                       H2
@@ -1467,8 +1609,40 @@ function PostForm({
                       <Quote className="h-4 w-4" />
                     </Button>
                     <div className="h-4 w-px bg-border mx-1" />
+                    {/* Direct Image Upload Button */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => contentImageInputRef.current?.click()}
+                      disabled={contentUploading}
+                      className="h-7 gap-1.5 px-2.5 text-xs font-semibold text-electric border-electric/40 bg-electric/10 hover:bg-electric/20 hover:border-electric transition shadow-sm"
+                      title="Upload an image from your computer and insert between content"
+                    >
+                      {contentUploading ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <ImageIcon className="h-3.5 w-3.5" />
+                      )}
+                      <span>{contentUploading ? "Uploading..." : "Upload Image"}</span>
+                    </Button>
+                    <div className="h-4 w-px bg-border mx-1" />
                     {/* HTML Snippet Generators */}
                     <span className="text-[10px] font-mono text-muted-foreground uppercase px-1">HTML:</span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-xs font-mono text-electric"
+                      onClick={() =>
+                        insertBetweenContent(
+                          '<figure class="my-8 overflow-hidden rounded-2xl border border-border/80 bg-card/60 shadow-soft transition hover:border-electric/30">\n  <div class="relative w-full overflow-hidden bg-black/10 aspect-[16/9] sm:aspect-[21/9] max-h-[520px] flex items-center justify-center">\n    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80" alt="Autonomous Heavy Equipment Fleet" class="h-full w-full object-cover" loading="lazy" />\n  </div>\n  <figcaption class="border-t border-border/60 bg-card/90 px-4 py-2.5 text-center text-xs font-mono text-muted-foreground">Autonomous Excavator operating in rough terrain</figcaption>\n</figure>'
+                        )
+                      }
+                      title="Insert Rectangular Image HTML Block"
+                    >
+                      &lt;Image /&gt;
+                    </Button>
                     <Button
                       type="button"
                       variant="outline"
@@ -1540,11 +1714,21 @@ function PostForm({
                       &lt;Embed /&gt;
                     </Button>
                   </div>
+                  {contentUploading && (
+                    <div className="flex items-center gap-2 border-b border-electric/30 bg-electric/10 px-3 py-2 text-xs font-mono text-electric animate-pulse">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <span>Uploading image and embedding into content at cursor...</span>
+                    </div>
+                  )}
                   <Textarea
+                    ref={contentTextareaRef}
                     value={form.content}
                     onChange={(event) => setField("content", event.target.value)}
+                    onPaste={handleContentPaste}
+                    onDrop={handleContentDrop}
+                    onDragOver={(e) => e.preventDefault()}
                     className="min-h-[380px] rounded-none border-0 shadow-none focus-visible:ring-0 font-mono text-sm leading-relaxed"
-                    placeholder="Directly write or paste HTML (<div>, <table>, <iframe>, <h2>, <p>, <a>, <button>) or Markdown here..."
+                    placeholder="Directly write or paste HTML (<div>, <table>, <iframe>, <h2>, <p>, <a>, <button>) or Markdown here... (Tip: Click 'Upload Image' or directly paste/drag-drop images between your content)"
                     required
                   />
                 </>
@@ -1648,9 +1832,12 @@ function PostForm({
                 </div>
               )}
             </div>
-            <p className="text-[11px] text-muted-foreground">
-              💡 <strong>Direct HTML Supported:</strong> You can paste standard HTML tags (<code>&lt;div&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;iframe&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;a&gt;</code>, etc.) directly into the editor and preview in real-time.
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-muted-foreground">
+              <p>
+                💡 <strong>Images &amp; HTML:</strong> Click <strong>Upload Image</strong>, drag &amp; drop, or directly <strong>paste (Ctrl+V)</strong> images anywhere between your content. Images are displayed in a clean, high-impact rectangular format.
+              </p>
+              <span className="font-mono text-[10px] text-electric">Supports Markdown ![Caption](url) &amp; &lt;figure&gt;&lt;img&gt;</span>
+            </div>
           </div>
         </div>
       )}
