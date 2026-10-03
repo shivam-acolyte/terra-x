@@ -796,7 +796,13 @@ function PostForm({
     setError("");
 
     try {
-      await upsertPost(form, token, selectedPost?.id);
+      let finalForm = form;
+      if (hasBase64Images && token) {
+        const cleaned = await convertBase64ImagesInText(form.content);
+        finalForm = { ...form, content: cleaned };
+        setField("content", cleaned);
+      }
+      await upsertPost(finalForm, token, selectedPost?.id);
       onSaved();
       if (!selectedPost) setForm(emptyForm);
     } catch (err) {
@@ -958,39 +964,67 @@ function PostForm({
     }, 10);
   }
 
-  async function uploadOrConvertImage(file: File): Promise<string> {
-    if (token) {
-      try {
-        const publicUrl = await uploadBlogImage(file, token);
-        if (publicUrl) return publicUrl;
-      } catch (err) {
-        console.warn("Backend image upload failed or unavailable, fallback to data URL:", err);
+  const hasBase64Images = useMemo(() => {
+    return /data:image\/[a-zA-Z0-9+]+;base64,/i.test(form.content);
+  }, [form.content]);
+
+  async function convertBase64ImagesInText(text: string): Promise<string> {
+    const base64Regex = /data:image\/([a-zA-Z0-9+]+);base64,([A-Za-z0-9+/=\s]+)/g;
+    const matches = [...text.matchAll(base64Regex)];
+    if (matches.length === 0) return text;
+
+    let updated = text;
+    for (let i = 0; i < matches.length; i++) {
+      const fullDataUrl = matches[i][0];
+      const mimeSubtype = (matches[i][1] || "jpeg").toLowerCase();
+      const ext = mimeSubtype === "jpeg" ? "jpg" : mimeSubtype;
+      const base64Clean = matches[i][2].replace(/\s+/g, "");
+
+      const byteCharacters = atob(base64Clean);
+      const byteNumbers = new Uint8Array(byteCharacters.length);
+      for (let j = 0; j < byteCharacters.length; j++) {
+        byteNumbers[j] = byteCharacters.charCodeAt(j);
       }
+      const blob = new Blob([byteNumbers], { type: `image/${mimeSubtype}` });
+      const file = new File([blob], `article-image-${Date.now()}-${i + 1}.${ext}`, { type: `image/${mimeSubtype}` });
+
+      const publicUrl = await uploadBlogImage(file, token);
+      updated = updated.split(fullDataUrl).join(publicUrl);
     }
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          resolve(reader.result);
-        } else {
-          reject(new Error("Failed to process image file"));
-        }
-      };
-      reader.onerror = () => reject(new Error("Failed to read image file"));
-      reader.readAsDataURL(file);
-    });
+    return updated;
   }
 
-  async function processAndInsertImage(file: File) {
+  async function convertBase64ImagesToShortUrls() {
+    if (!token) {
+      setError("Admin session required to upload images. Please sign in again.");
+      return;
+    }
     setContentUploading(true);
     setError("");
     try {
-      const imageUrl = await uploadOrConvertImage(file);
+      const cleaned = await convertBase64ImagesInText(form.content);
+      setField("content", cleaned);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to convert embedded images to short URLs");
+    } finally {
+      setContentUploading(false);
+    }
+  }
+
+  async function processAndInsertImage(file: File) {
+    if (!token) {
+      setError("Admin authentication required to upload images. Please sign in again.");
+      return;
+    }
+    setContentUploading(true);
+    setError("");
+    try {
+      const publicUrl = await uploadBlogImage(file, token);
       const cleanName = file.name ? file.name.replace(/\.[^.]+$/, "") : "Article image";
       const altText = cleanName.toLowerCase() === "image" ? "Terra-X Article Image" : cleanName;
-      insertBetweenContent(`![${altText}](${imageUrl})`);
+      insertBetweenContent(`![${altText}](${publicUrl})`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload and insert image");
+      setError(err instanceof Error ? err.message : "Failed to upload image. Please verify file is an image under 5MB.");
     } finally {
       setContentUploading(false);
     }
@@ -1572,6 +1606,27 @@ function PostForm({
                 </button>
               </div>
             </div>
+
+            {hasBase64Images && (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-200 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-amber-400 shrink-0" />
+                  <span>
+                    <strong>Long embedded image address detected!</strong> Replace with clean, short URL address:
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={contentUploading}
+                  onClick={convertBase64ImagesToShortUrls}
+                  className="h-7 text-xs bg-amber-500 text-black hover:bg-amber-400 font-bold px-3 shadow"
+                >
+                  {contentUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+                  Convert to Short URL
+                </Button>
+              </div>
+            )}
 
             <div className="overflow-hidden rounded-md border border-input bg-background">
               {editorTab === "write" ? (
