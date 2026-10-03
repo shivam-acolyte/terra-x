@@ -15,8 +15,8 @@ export default defineConfig({
       allow: [process.cwd()],
     },
     proxy: {
-      "/api": `http://localhost:${process.env.PORT || 3002}`,
-      "/uploads": `http://localhost:${process.env.PORT || 3002}`,
+      "/api": `http://localhost:${process.env.API_PORT || (process.env.PORT && process.env.PORT !== "9765" ? process.env.PORT : "3002")}`,
+      "/uploads": `http://localhost:${process.env.API_PORT || (process.env.PORT && process.env.PORT !== "9765" ? process.env.PORT : "3002")}`,
     },
   },
   preview: {
