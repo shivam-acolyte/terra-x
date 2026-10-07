@@ -33,8 +33,13 @@ const upload = multer({
       callback(null, `${randomUUID()}${extension}`);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (_request, file, callback) => callback(null, /^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)),
+  limits: { fileSize: 25 * 1024 * 1024 },
+  fileFilter: (_request, file, callback) => {
+    const isImage =
+      /^image\//i.test(file.mimetype) ||
+      /\.(jpe?g|png|webp|gif|svg|avif|bmp|tiff?)$/i.test(file.originalname);
+    callback(null, isImage);
+  },
 });
 
 app.use(express.json({ limit: "1mb" }));

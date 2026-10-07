@@ -1013,7 +1013,7 @@ function PostForm({
 
   async function processAndInsertImage(file: File) {
     if (!token) {
-      setError("Admin authentication required to upload images. Please sign in again.");
+      setError("Admin session expired or missing. Please sign in to upload images.");
       return;
     }
     setContentUploading(true);
@@ -1024,7 +1024,8 @@ function PostForm({
       const altText = cleanName.toLowerCase() === "image" ? "Terra-X Article Image" : cleanName;
       insertBetweenContent(`![${altText}](${publicUrl})`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload image. Please verify file is an image under 5MB.");
+      const message = err instanceof Error ? err.message : "Image upload failed";
+      setError(`Image Upload Error: ${message}`);
     } finally {
       setContentUploading(false);
     }
@@ -1038,17 +1039,31 @@ function PostForm({
   }
 
   async function handleContentPaste(event: React.ClipboardEvent<HTMLTextAreaElement>) {
-    const items = event.clipboardData?.items;
-    if (!items) return;
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.type.indexOf("image") !== -1) {
-        const file = item.getAsFile();
-        if (file) {
+    // 1. Check for files attached to the paste event (e.g. copied image file from desktop/explorer)
+    const files = event.clipboardData?.files;
+    if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith("image/") || /\.(jpe?g|png|webp|gif|svg|avif|bmp)$/i.test(file.name)) {
           event.preventDefault();
           await processAndInsertImage(file);
-          break;
+          return;
+        }
+      }
+    }
+
+    // 2. Check for items in the clipboard (e.g. screenshot, snipping tool, copied bitmap)
+    const items = event.clipboardData?.items;
+    if (items && items.length > 0) {
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith("image/") || item.kind === "file") {
+          const file = item.getAsFile();
+          if (file) {
+            event.preventDefault();
+            await processAndInsertImage(file);
+            return;
+          }
         }
       }
     }
@@ -1057,7 +1072,7 @@ function PostForm({
   async function handleContentDrop(event: React.DragEvent<HTMLTextAreaElement>) {
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      const imageFile = Array.from(files).find((f) => f.type.startsWith("image/"));
+      const imageFile = Array.from(files).find((f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|gif|svg|avif|bmp)$/i.test(f.name));
       if (imageFile) {
         event.preventDefault();
         await processAndInsertImage(imageFile);
@@ -1083,6 +1098,17 @@ function PostForm({
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 shadow-soft space-y-6">
+      {/* Alert Error Message */}
+      {error && (
+        <div className="flex items-center gap-3 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <AlertCircle className="h-5 w-5 shrink-0" />
+          <span className="flex-1 font-medium">{error}</span>
+          <button type="button" onClick={() => setError("")} className="ml-auto text-xs underline font-semibold">
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Top Form Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
         <div>
