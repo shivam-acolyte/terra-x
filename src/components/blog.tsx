@@ -41,6 +41,7 @@ import {
   Eye,
   FileDown,
   FileText,
+  FileUp,
   Globe,
   Image as ImageIcon,
   Italic,
@@ -217,6 +218,118 @@ function renderBlogHtml(content: string): string {
   });
 
   return processed.filter(Boolean).join("\n\n");
+}
+
+export function htmlToCleanTextOrMarkdown(html: string): string {
+  if (!html || !html.trim()) return "";
+  if (typeof window === "undefined" || typeof DOMParser === "undefined") {
+    return html.replace(/<[^>]+>/g, "").trim();
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  // Remove elements that don't belong in article text
+  doc.querySelectorAll("script, style, link, meta, head, noscript, svg").forEach((el) => el.remove());
+
+  function processNode(node: Node): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent || "";
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return "";
+    }
+
+    const el = node as HTMLElement;
+    const tag = el.tagName.toLowerCase();
+    const childrenText = Array.from(el.childNodes).map(processNode).join("");
+
+    switch (tag) {
+      case "h1":
+        return `\n\n# ${childrenText.trim()}\n\n`;
+      case "h2":
+        return `\n\n## ${childrenText.trim()}\n\n`;
+      case "h3":
+        return `\n\n### ${childrenText.trim()}\n\n`;
+      case "h4":
+        return `\n\n#### ${childrenText.trim()}\n\n`;
+      case "h5":
+      case "h6":
+        return `\n\n##### ${childrenText.trim()}\n\n`;
+      case "p":
+        return `\n\n${childrenText.trim()}\n\n`;
+      case "br":
+        return "\n";
+      case "hr":
+        return "\n\n---\n\n";
+      case "strong":
+      case "b":
+        return `**${childrenText.trim()}**`;
+      case "em":
+      case "i":
+        return `*${childrenText.trim()}*`;
+      case "code":
+        return el.parentElement?.tagName.toLowerCase() === "pre"
+          ? childrenText
+          : `\`${childrenText.trim()}\``;
+      case "pre":
+        return `\n\n\`\`\`\n${childrenText.trim()}\n\`\`\`\n\n`;
+      case "blockquote":
+        return `\n\n> ${childrenText.trim().replace(/\n/g, "\n> ")}\n\n`;
+      case "a": {
+        const href = el.getAttribute("href") || "#";
+        const text = childrenText.trim() || href;
+        return `[${text}](${href})`;
+      }
+      case "img": {
+        const src = el.getAttribute("src") || "";
+        const alt = el.getAttribute("alt") || el.getAttribute("title") || "Article image";
+        return src ? `\n\n![${alt}](${src})\n\n` : "";
+      }
+      case "figure":
+        return `\n\n${childrenText.trim()}\n\n`;
+      case "figcaption":
+        return `\n*${childrenText.trim()}*\n`;
+      case "ul": {
+        const lis = Array.from(el.children)
+          .filter((c) => c.tagName.toLowerCase() === "li")
+          .map((li) => `- ${Array.from(li.childNodes).map(processNode).join("").trim()}`);
+        return `\n\n${lis.join("\n")}\n\n`;
+      }
+      case "ol": {
+        let idx = 1;
+        const lis = Array.from(el.children)
+          .filter((c) => c.tagName.toLowerCase() === "li")
+          .map((li) => `${idx++}. ${Array.from(li.childNodes).map(processNode).join("").trim()}`);
+        return `\n\n${lis.join("\n")}\n\n`;
+      }
+      case "li":
+        return childrenText;
+      case "table": {
+        const rows = Array.from(el.querySelectorAll("tr"));
+        if (rows.length === 0) return childrenText;
+        const lines: string[] = [];
+        rows.forEach((row, rIdx) => {
+          const cells = Array.from(row.querySelectorAll("th, td")).map(
+            (c) => c.textContent?.trim().replace(/\|/g, "\\|") || ""
+          );
+          lines.push(`| ${cells.join(" | ")} |`);
+          if (rIdx === 0) {
+            lines.push(`| ${cells.map(() => "---").join(" | ")} |`);
+          }
+        });
+        return `\n\n${lines.join("\n")}\n\n`;
+      }
+      default:
+        return childrenText;
+    }
+  }
+
+  const rawResult = processNode(doc.body);
+  return rawResult
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 export function BlogBody({ content }: { content: string }) {
@@ -687,15 +800,19 @@ function PostForm({
   token,
   onSaved,
   onCancel,
+  onRefreshToken,
 }: {
   selectedPost: BlogPost | null;
   token: string;
   onSaved: () => void;
   onCancel: () => void;
+  onRefreshToken?: (newToken: string) => void;
 }) {
   const [form, setForm] = useState<BlogFormValues>(emptyForm);
   const [formTab, setFormTab] = useState<"content" | "seo">("content");
-  const [editorTab, setEditorTab] = useState<"write" | "preview">("write");
+  const [editorTab, setEditorTab] = useState<"visual" | "html" | "preview">("visual");
+  const [previousHtmlBackup, setPreviousHtmlBackup] = useState<string | null>(null);
+  const [htmlActionMessage, setHtmlActionMessage] = useState<string>("");
   const [tagInput, setTagInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [duplicating, setDuplicating] = useState(false);
@@ -707,9 +824,133 @@ function PostForm({
   const [pdfSuccess, setPdfSuccess] = useState("");
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [error, setError] = useState("");
+  const [showRelogin, setShowRelogin] = useState(false);
+  const [reloginEmail, setReloginEmail] = useState("");
+  const [reloginPassword, setReloginPassword] = useState("");
+  const [reloginLoading, setReloginLoading] = useState(false);
+  const [reloginError, setReloginError] = useState("");
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
   const contentImageInputRef = useRef<HTMLInputElement>(null);
+  const htmlFileInputRef = useRef<HTMLInputElement>(null);
+  const visualEditorRef = useRef<HTMLDivElement>(null);
   const [contentUploading, setContentUploading] = useState(false);
+
+  // Sync form.content into visual editor: automatically converts HTML code to clean text when in visual editor
+  useEffect(() => {
+    if (editorTab === "visual") {
+      if (form.content && /<[a-z][\s\S]*>/i.test(form.content)) {
+        const clean = htmlToCleanTextOrMarkdown(form.content);
+        setField("content", clean);
+        if (visualEditorRef.current) {
+          visualEditorRef.current.innerHTML = renderBlogHtml(clean) || "<p><br></p>";
+        }
+      } else if (visualEditorRef.current) {
+        const rendered = renderBlogHtml(form.content);
+        if (visualEditorRef.current.innerHTML !== rendered) {
+          visualEditorRef.current.innerHTML = rendered || "<p><br></p>";
+        }
+      }
+    }
+  }, [editorTab]);
+
+  function handleVisualEditorInput() {
+    if (visualEditorRef.current) {
+      setField("content", visualEditorRef.current.innerHTML);
+    }
+  }
+
+  function execVisualFormat(command: string, value: string | undefined = undefined) {
+    if (editorTab === "visual") {
+      visualEditorRef.current?.focus();
+      document.execCommand(command, false, value);
+      handleVisualEditorInput();
+    }
+  }
+
+  function handleHtmlFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const rawHtml = (e.target?.result as string) || "";
+        if (!rawHtml) return;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtml, "text/html");
+
+        const extractedTitle =
+          doc.querySelector("title")?.textContent?.trim() ||
+          doc.querySelector("h1")?.textContent?.trim();
+        if (!form.title && extractedTitle) {
+          setField("title", extractedTitle);
+        }
+
+        const metaDesc = doc.querySelector("meta[name='description']")?.getAttribute("content")?.trim();
+        if (!form.excerpt && metaDesc) {
+          setField("excerpt", metaDesc);
+        }
+
+        doc.querySelectorAll("script, style, link, meta, head").forEach((el) => el.remove());
+
+        const mainEl = doc.querySelector("article") || doc.querySelector("main") || doc.body;
+        const bodyHtml = mainEl ? mainEl.innerHTML.trim() : rawHtml.trim();
+
+        setField("content", bodyHtml);
+        if (visualEditorRef.current) {
+          visualEditorRef.current.innerHTML = renderBlogHtml(bodyHtml);
+        }
+        setHtmlActionMessage(`Loaded HTML from "${file.name}"!`);
+        setTimeout(() => setHtmlActionMessage(""), 5000);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to read HTML file.");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+  }
+
+  function handleConvertHtmlToText() {
+    if (!form.content || !form.content.trim()) return;
+    setPreviousHtmlBackup(form.content);
+    const converted = htmlToCleanTextOrMarkdown(form.content);
+    setField("content", converted);
+    if (visualEditorRef.current) {
+      visualEditorRef.current.innerHTML = renderBlogHtml(converted);
+    }
+    setHtmlActionMessage("Converted HTML tags into clean text & Markdown!");
+    setTimeout(() => setHtmlActionMessage(""), 5000);
+  }
+
+  function handleUndoHtmlConversion() {
+    if (previousHtmlBackup !== null) {
+      setField("content", previousHtmlBackup);
+      if (visualEditorRef.current) {
+        visualEditorRef.current.innerHTML = renderBlogHtml(previousHtmlBackup);
+      }
+      setPreviousHtmlBackup(null);
+      setHtmlActionMessage("Restored original HTML code!");
+      setTimeout(() => setHtmlActionMessage(""), 4000);
+    }
+  }
+
+  async function handleReloginSubmit(e: FormEvent) {
+    e.preventDefault();
+    setReloginLoading(true);
+    setReloginError("");
+    try {
+      const session = await signInAdmin(reloginEmail, reloginPassword);
+      onRefreshToken?.(session.access_token);
+      setError("");
+      setShowRelogin(false);
+      setReloginPassword("");
+    } catch (err) {
+      setReloginError(err instanceof Error ? err.message : "Invalid email or password");
+    } finally {
+      setReloginLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!selectedPost) {
@@ -806,7 +1047,13 @@ function PostForm({
       onSaved();
       if (!selectedPost) setForm(emptyForm);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Blog save failed");
+      const msg = err instanceof Error ? err.message : "Blog save failed";
+      if (msg.includes("Authentication required") || msg.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to save changes.");
+        setShowRelogin(true);
+      } else {
+        setError(msg);
+      }
     } finally {
       setSaving(false);
     }
@@ -825,7 +1072,13 @@ function PostForm({
       if (!form.image_alt_text) setField("image_alt_text", file.name.replace(/\.[^.]+$/, ""));
       if (!form.image_title) setField("image_title", file.name.replace(/\.[^.]+$/, ""));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Image upload failed");
+      const msg = err instanceof Error ? err.message : "Image upload failed";
+      if (msg.includes("Authentication required") || msg.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(msg);
+      }
     } finally {
       setUploading(false);
       event.target.value = "";
@@ -843,7 +1096,13 @@ function PostForm({
       const publicUrl = await uploadBlogImage(file, token);
       setField("mobile_image_url", publicUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Mobile image upload failed");
+      const msg = err instanceof Error ? err.message : "Mobile image upload failed";
+      if (msg.includes("Authentication required") || msg.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(msg);
+      }
     } finally {
       setMobileUploading(false);
       event.target.value = "";
@@ -861,7 +1120,13 @@ function PostForm({
       const publicUrl = await uploadBlogImage(file, token);
       setField("og_image_url", publicUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "SEO image upload failed");
+      const msg = err instanceof Error ? err.message : "SEO image upload failed";
+      if (msg.includes("Authentication required") || msg.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(msg);
+      }
     } finally {
       setSeoUploading(false);
       event.target.value = "";
@@ -879,7 +1144,13 @@ function PostForm({
       const publicUrl = await uploadBlogImage(file, token);
       setField("author_avatar_url", publicUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Author photo upload failed");
+      const msg = err instanceof Error ? err.message : "Author photo upload failed";
+      if (msg.includes("Authentication required") || msg.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(msg);
+      }
     } finally {
       setAuthorUploading(false);
       event.target.value = "";
@@ -996,7 +1267,8 @@ function PostForm({
 
   async function convertBase64ImagesToShortUrls() {
     if (!token) {
-      setError("Admin session required to upload images. Please sign in again.");
+      setError("Your admin session has expired. Please re-authenticate to upload images.");
+      setShowRelogin(true);
       return;
     }
     setContentUploading(true);
@@ -1005,7 +1277,13 @@ function PostForm({
       const cleaned = await convertBase64ImagesInText(form.content);
       setField("content", cleaned);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to convert embedded images to short URLs");
+      const message = err instanceof Error ? err.message : "Failed to convert embedded images to short URLs";
+      if (message.includes("Authentication required") || message.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(message);
+      }
     } finally {
       setContentUploading(false);
     }
@@ -1013,7 +1291,8 @@ function PostForm({
 
   async function processAndInsertImage(file: File) {
     if (!token) {
-      setError("Admin session expired or missing. Please sign in to upload images.");
+      setError("Your admin session has expired. Please re-authenticate to upload images.");
+      setShowRelogin(true);
       return;
     }
     setContentUploading(true);
@@ -1025,7 +1304,12 @@ function PostForm({
       insertBetweenContent(`![${altText}](${publicUrl})`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Image upload failed";
-      setError(`Image Upload Error: ${message}`);
+      if (message.includes("Authentication required") || message.includes("401")) {
+        setError("Your admin session has expired. Please re-authenticate to upload images.");
+        setShowRelogin(true);
+      } else {
+        setError(`Image Upload Error: ${message}`);
+      }
     } finally {
       setContentUploading(false);
     }
@@ -1064,6 +1348,31 @@ function PostForm({
             await processAndInsertImage(file);
             return;
           }
+        }
+      }
+    }
+
+    // 3. Check for HTML content containing base64 images (e.g. copied from Word, Docs, or web pages)
+    const htmlData = event.clipboardData?.getData("text/html");
+    if (htmlData) {
+      const match = htmlData.match(/<img[^>]+src=["'](data:image\/([a-zA-Z0-9+]+);base64,([A-Za-z0-9+/=\s]+))["']/i);
+      if (match) {
+        event.preventDefault();
+        try {
+          const mimeSubtype = (match[2] || "png").toLowerCase();
+          const base64Clean = match[3].replace(/\s+/g, "");
+          const byteChars = atob(base64Clean);
+          const byteNumbers = new Uint8Array(byteChars.length);
+          for (let j = 0; j < byteChars.length; j++) {
+            byteNumbers[j] = byteChars.charCodeAt(j);
+          }
+          const blob = new Blob([byteNumbers], { type: `image/${mimeSubtype}` });
+          const ext = mimeSubtype === "jpeg" ? "jpg" : mimeSubtype;
+          const file = new File([blob], `pasted-image-${Date.now()}.${ext}`, { type: `image/${mimeSubtype}` });
+          await processAndInsertImage(file);
+          return;
+        } catch (e) {
+          console.warn("Could not extract pasted HTML image:", e);
         }
       }
     }
@@ -1597,41 +1906,127 @@ function PostForm({
             </div>
           </div>
 
-          {/* Rich Content Editor with Write/HTML and Live Preview tabs */}
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <FieldLabel required>Article Body (Markdown &amp; Raw HTML)</FieldLabel>
-                <span className="rounded bg-electric/15 px-2 py-0.5 text-[10px] font-mono font-bold text-electric uppercase tracking-wider">
-                  Raw HTML &amp; Markdown Supported
-                </span>
+          {/* Rich Content Editor with Visual Editor, Add/Edit HTML, and Live Preview tabs */}
+          <div className="space-y-3">
+            <input
+              type="file"
+              ref={htmlFileInputRef}
+              accept=".html,.htm,text/html"
+              className="hidden"
+              onChange={handleHtmlFileUpload}
+            />
+            <input
+              type="file"
+              ref={contentImageInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handleContentImageFileInput}
+            />
+
+            {/* Top Action Header with Upload .html File, + Insert Image, Convert HTML to Text */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+              <div>
+                <FieldLabel required>Article Body (HTML / Visual Rich Text / Markdown)</FieldLabel>
+                <p className="mt-0.5 text-xs text-muted-foreground font-normal">
+                  Upload raw HTML, write in Rich Text, or compose direct in Markdown
+                </p>
               </div>
-              <div className="flex items-center rounded-lg border border-border bg-card p-0.5 text-xs">
-                <button
+
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Upload .html File */}
+                <Button
                   type="button"
-                  onClick={() => setEditorTab("write")}
-                  className={`rounded-md px-3 py-1 font-semibold transition ${
-                    editorTab === "write"
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  onClick={() => htmlFileInputRef.current?.click()}
+                  className="h-9 gap-2 rounded-lg bg-[#00875a] hover:bg-[#007048] text-white text-xs font-bold px-3.5 shadow-sm transition"
+                  title="Upload and import raw .html file into article body"
                 >
-                  Write / HTML
-                </button>
+                  <FileUp className="h-4 w-4" />
+                  <span>Upload .html File</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Sub-bar: Mode Switcher (Visual Editor vs Add / Edit HTML) matching user's image */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-2">
+              <div className="inline-flex items-center rounded-lg border border-border bg-muted/30 p-1 text-xs gap-1">
+                {/* Mode 1: Visual Editor - automatically views converted HTML code as clean text */}
                 <button
                   type="button"
-                  onClick={() => setEditorTab("preview")}
-                  className={`rounded-md px-3 py-1 font-semibold transition flex items-center gap-1 ${
-                    editorTab === "preview"
-                      ? "bg-primary text-primary-foreground"
+                  onClick={() => {
+                    setEditorTab("visual");
+                    if (form.content && /<[a-z][\s\S]*>/i.test(form.content)) {
+                      const clean = htmlToCleanTextOrMarkdown(form.content);
+                      setField("content", clean);
+                      if (visualEditorRef.current) {
+                        visualEditorRef.current.innerHTML = renderBlogHtml(clean) || "<p><br></p>";
+                      }
+                    } else if (visualEditorRef.current) {
+                      visualEditorRef.current.innerHTML = renderBlogHtml(form.content) || "<p><br></p>";
+                    }
+                  }}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
+                    editorTab === "visual"
+                      ? "bg-card text-foreground shadow-sm border border-border/80 font-bold"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <Eye className="h-3.5 w-3.5" />
-                  Live Preview
+                  <span>Visual Editor</span>
+                </button>
+
+                {/* Mode 2: Add / Edit HTML */}
+                <button
+                  type="button"
+                  onClick={() => setEditorTab("html")}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
+                    editorTab === "html"
+                      ? "bg-card text-foreground shadow-sm border border-border/80 font-bold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Code className="h-3.5 w-3.5" />
+                  <span>Add / Edit HTML</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+
+                {/* Mode 3: Live Preview Tab */}
+                <button
+                  type="button"
+                  onClick={() => setEditorTab("preview")}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
+                    editorTab === "preview"
+                      ? "bg-primary text-primary-foreground font-bold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  <span>Live Page Preview</span>
                 </button>
               </div>
             </div>
+
+            {/* Notification message for HTML upload or conversion */}
+            {htmlActionMessage && (
+              <div className="flex items-center justify-between gap-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 px-3.5 py-2 text-xs text-emerald-400 font-medium">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  <span>{htmlActionMessage}</span>
+                </div>
+                {previousHtmlBackup !== null && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleUndoHtmlConversion}
+                    className="h-6 text-xs text-emerald-300 hover:text-white underline p-0"
+                  >
+                    Undo
+                  </Button>
+                )}
+              </div>
+            )}
 
             {hasBase64Images && (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-200 shadow-sm">
@@ -1655,41 +2050,112 @@ function PostForm({
             )}
 
             <div className="overflow-hidden rounded-md border border-input bg-background">
-              {editorTab === "write" ? (
+              {editorTab !== "preview" ? (
                 <>
-                  <input
-                    type="file"
-                    ref={contentImageInputRef}
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleContentImageFileInput}
-                  />
                   <div className="flex flex-wrap items-center gap-1 border-b border-input bg-card px-2 py-2">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => insertContent("## Heading Title")}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("formatBlock", "<h2>");
+                        else insertContent("## Heading Title");
+                      }}
+                      title="Heading 2"
+                    >
                       H2
                     </Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => insertContent("### Subheading")}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("formatBlock", "<h3>");
+                        else insertContent("### Subheading");
+                      }}
+                      title="Heading 3"
+                    >
                       H3
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("**Bold text**")} title="Bold">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("bold");
+                        else insertContent("**Bold text**");
+                      }}
+                      title="Bold"
+                    >
                       <Bold className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("*Italic text*")} title="Italic">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("italic");
+                        else insertContent("*Italic text*");
+                      }}
+                      title="Italic"
+                    >
                       <Italic className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("[Link text](https://)")} title="Link">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") {
+                          const url = prompt("Enter Link URL (https://...):");
+                          if (url) execVisualFormat("createLink", url);
+                        } else {
+                          insertContent("[Link text](https://)");
+                        }
+                      }}
+                      title="Link"
+                    >
                       <LinkIcon className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("- List item")} title="Bullet List">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("insertUnorderedList");
+                        else insertContent("- List item");
+                      }}
+                      title="Bullet List"
+                    >
                       <List className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("1. List item")} title="Numbered List">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("insertOrderedList");
+                        else insertContent("1. List item");
+                      }}
+                      title="Numbered List"
+                    >
                       <ListOrdered className="h-4 w-4" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => insertContent("> Quote text")} title="Quote">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (editorTab === "visual") execVisualFormat("formatBlock", "<blockquote>");
+                        else insertContent("> Quote text");
+                      }}
+                      title="Quote"
+                    >
                       <Quote className="h-4 w-4" />
                     </Button>
+
                     <div className="h-4 w-px bg-border mx-1" />
+
                     {/* Direct Image Upload Button */}
                     <Button
                       type="button"
@@ -1707,7 +2173,9 @@ function PostForm({
                       )}
                       <span>{contentUploading ? "Uploading..." : "Upload Image"}</span>
                     </Button>
+
                     <div className="h-4 w-px bg-border mx-1" />
+
                     {/* HTML Snippet Generators */}
                     <span className="text-[10px] font-mono text-muted-foreground uppercase px-1">HTML:</span>
                     <Button
@@ -1715,11 +2183,16 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertBetweenContent(
-                          '<figure class="my-8 overflow-hidden rounded-2xl border border-border/80 bg-card/60 shadow-soft transition hover:border-electric/30">\n  <div class="relative w-full overflow-hidden bg-black/10 aspect-[16/9] sm:aspect-[21/9] max-h-[520px] flex items-center justify-center">\n    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80" alt="Autonomous Heavy Equipment Fleet" class="h-full w-full object-cover" loading="lazy" />\n  </div>\n  <figcaption class="border-t border-border/60 bg-card/90 px-4 py-2.5 text-center text-xs font-mono text-muted-foreground">Autonomous Excavator operating in rough terrain</figcaption>\n</figure>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<figure class="my-8 overflow-hidden rounded-2xl border border-border/80 bg-card/60 shadow-soft transition hover:border-electric/30">\n  <div class="relative w-full overflow-hidden bg-black/10 aspect-[16/9] sm:aspect-[21/9] max-h-[520px] flex items-center justify-center">\n    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80" alt="Autonomous Heavy Equipment Fleet" class="h-full w-full object-cover" loading="lazy" />\n  </div>\n  <figcaption class="border-t border-border/60 bg-card/90 px-4 py-2.5 text-center text-xs font-mono text-muted-foreground">Autonomous Excavator operating in rough terrain</figcaption>\n</figure>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertBetweenContent(snippet);
+                        }
+                      }}
                       title="Insert Rectangular Image HTML Block"
                     >
                       &lt;Image /&gt;
@@ -1729,11 +2202,16 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertContent(
-                          '<div class="my-6 rounded-xl border border-electric/40 bg-card p-5 shadow-soft">\n  <h4 class="text-lg font-bold text-electric">⚡ Highlight Title</h4>\n  <p class="mt-2 text-muted-foreground">Add your custom styled HTML content or callout notice here.</p>\n</div>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<div class="my-6 rounded-xl border border-electric/40 bg-card p-5 shadow-soft">\n  <h4 class="text-lg font-bold text-electric">⚡ Highlight Title</h4>\n  <p class="mt-2 text-muted-foreground">Add your custom styled HTML content or callout notice here.</p>\n</div>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertContent(snippet);
+                        }
+                      }}
                       title="Insert Styled HTML Box"
                     >
                       &lt;Box /&gt;
@@ -1743,11 +2221,16 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertContent(
-                          '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">\n  <div class="p-4 rounded-xl border border-border bg-card/60">\n    <h5 class="font-bold text-foreground">Column 1</h5>\n    <p class="text-sm text-muted-foreground mt-1">Left side card details.</p>\n  </div>\n  <div class="p-4 rounded-xl border border-border bg-card/60">\n    <h5 class="font-bold text-foreground">Column 2</h5>\n    <p class="text-sm text-muted-foreground mt-1">Right side card details.</p>\n  </div>\n</div>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">\n  <div class="p-4 rounded-xl border border-border bg-card/60">\n    <h5 class="font-bold text-foreground">Column 1</h5>\n    <p class="text-sm text-muted-foreground mt-1">Left side card details.</p>\n  </div>\n  <div class="p-4 rounded-xl border border-border bg-card/60">\n    <h5 class="font-bold text-foreground">Column 2</h5>\n    <p class="text-sm text-muted-foreground mt-1">Right side card details.</p>\n  </div>\n</div>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertContent(snippet);
+                        }
+                      }}
                       title="Insert 2-Column HTML Grid"
                     >
                       &lt;Grid /&gt;
@@ -1757,11 +2240,16 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertContent(
-                          '<div class="overflow-x-auto my-6">\n  <table class="w-full border-collapse text-sm">\n    <thead>\n      <tr class="bg-card border-b border-border">\n        <th class="p-3 text-left">Feature</th>\n        <th class="p-3 text-left">Specification</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr class="border-b border-border">\n        <td class="p-3">Battery Capacity</td>\n        <td class="p-3">150 kWh</td>\n      </tr>\n    </tbody>\n  </table>\n</div>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<div class="overflow-x-auto my-6">\n  <table class="w-full border-collapse text-sm">\n    <thead>\n      <tr class="bg-card border-b border-border">\n        <th class="p-3 text-left">Feature</th>\n        <th class="p-3 text-left">Specification</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr class="border-b border-border">\n        <td class="p-3">Battery Capacity</td>\n        <td class="p-3">150 kWh</td>\n      </tr>\n    </tbody>\n  </table>\n</div>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertContent(snippet);
+                        }
+                      }}
                       title="Insert HTML Table"
                     >
                       &lt;Table /&gt;
@@ -1771,11 +2259,16 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertContent(
-                          '<div class="my-6 text-center">\n  <a href="https://terraxopc.com/contact" class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-glow hover:bg-primary/90 transition">\n    Explore Terra-X Fleet &rarr;\n  </a>\n</div>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<div class="my-6 text-center">\n  <a href="https://terraxopc.com/contact" class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-glow hover:bg-primary/90 transition">\n    Explore Terra-X Fleet &rarr;\n  </a>\n</div>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertContent(snippet);
+                        }
+                      }}
                       title="Insert CTA Button"
                     >
                       &lt;CTA /&gt;
@@ -1785,33 +2278,62 @@ function PostForm({
                       variant="outline"
                       size="sm"
                       className="h-7 text-xs font-mono text-electric"
-                      onClick={() =>
-                        insertContent(
-                          '<div class="aspect-video w-full rounded-xl overflow-hidden my-6 border border-border">\n  <iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\n</div>'
-                        )
-                      }
+                      onClick={() => {
+                        const snippet = '<div class="aspect-video w-full rounded-xl overflow-hidden my-6 border border-border">\n  <iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\n</div>';
+                        if (editorTab === "visual") {
+                          visualEditorRef.current?.focus();
+                          document.execCommand("insertHTML", false, snippet);
+                          handleVisualEditorInput();
+                        } else {
+                          insertContent(snippet);
+                        }
+                      }}
                       title="Insert Video Embed"
                     >
                       &lt;Embed /&gt;
                     </Button>
                   </div>
+
                   {contentUploading && (
                     <div className="flex items-center gap-2 border-b border-electric/30 bg-electric/10 px-3 py-2 text-xs font-mono text-electric animate-pulse">
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       <span>Uploading image and embedding into content at cursor...</span>
                     </div>
                   )}
-                  <Textarea
-                    ref={contentTextareaRef}
-                    value={form.content}
-                    onChange={(event) => setField("content", event.target.value)}
-                    onPaste={handleContentPaste}
-                    onDrop={handleContentDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    className="min-h-[380px] rounded-none border-0 shadow-none focus-visible:ring-0 font-mono text-sm leading-relaxed"
-                    placeholder="Directly write or paste HTML (<div>, <table>, <iframe>, <h2>, <p>, <a>, <button>) or Markdown here... (Tip: Click 'Upload Image' or directly paste/drag-drop images between your content)"
-                    required
-                  />
+
+                  {/* Mode 1: Visual WYSIWYG Editor */}
+                  {editorTab === "visual" && (
+                    <div className="relative">
+                      <div
+                        ref={visualEditorRef}
+                        contentEditable
+                        suppressContentEditableWarning
+                        onInput={handleVisualEditorInput}
+                        onBlur={handleVisualEditorInput}
+                        className="min-h-[420px] p-6 bg-background focus:outline-none prose prose-invert max-w-none text-base leading-relaxed text-foreground [&_h1]:text-3xl [&_h1]:font-black [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-xl [&_h3]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_blockquote]:border-l-4 [&_blockquote]:border-electric [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_table]:w-full [&_table]:border [&_table]:border-border [&_table]:my-6 [&_th]:border [&_th]:border-border [&_th]:bg-card [&_th]:p-3 [&_th]:text-left [&_th]:font-bold [&_td]:border [&_td]:border-border [&_td]:p-3 [&_iframe]:w-full [&_iframe]:rounded-xl [&_iframe]:my-6 [&_img]:w-full [&_img]:max-h-[520px] [&_img]:object-cover [&_img]:rounded-2xl [&_img]:border [&_img]:border-border/80 [&_img]:shadow-soft [&_img]:my-6 [&_figure]:my-8 [&_figure]:overflow-hidden [&_figure]:rounded-2xl [&_figure]:border [&_figure]:border-border/80 [&_figure]:bg-card/60 [&_figure]:shadow-soft [&_figure_img]:my-0 [&_figure_img]:border-0 [&_figure_img]:rounded-none [&_figcaption]:border-t [&_figcaption]:border-border/60 [&_figcaption]:bg-card/90 [&_figcaption]:px-4 [&_figcaption]:py-2.5 [&_figcaption]:text-center [&_figcaption]:text-xs [&_figcaption]:font-mono [&_figcaption]:text-muted-foreground [&_a]:text-electric [&_a]:underline"
+                        style={{ minHeight: "420px" }}
+                      />
+                      <div className="border-t border-border/60 bg-muted/20 px-3 py-1.5 text-[11px] text-muted-foreground font-mono flex items-center justify-between">
+                        <span>✨ Visual WYSIWYG Mode: Click anywhere to type directly. Click &apos;Add / Edit HTML&apos; to view raw code.</span>
+                        <span className="text-electric">Autosyncing</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Mode 2: Add / Edit HTML & Markdown Code Textarea */}
+                  {editorTab === "html" && (
+                    <Textarea
+                      ref={contentTextareaRef}
+                      value={form.content}
+                      onChange={(event) => setField("content", event.target.value)}
+                      onPaste={handleContentPaste}
+                      onDrop={handleContentDrop}
+                      onDragOver={(e) => e.preventDefault()}
+                      className="min-h-[420px] rounded-none border-0 shadow-none focus-visible:ring-0 font-mono text-sm leading-relaxed"
+                      placeholder="Directly write or paste HTML (<div>, <table>, <iframe>, <h2>, <p>, <a>, <button>) or Markdown here... (Tip: Click 'Upload .html File' or click 'Convert HTML to Text' to turn raw HTML into clean text)"
+                      required
+                    />
+                  )}
                 </>
               ) : (
                 <div className="min-h-[380px] p-6 bg-card/40 overflow-y-auto space-y-6">
@@ -2059,9 +2581,65 @@ function PostForm({
 
       {/* Form Error & Submit Bar */}
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{error}</span>
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span className="font-medium">{error}</span>
+            </div>
+            {!showRelogin && (error.includes("session") || error.includes("Authentication") || error.includes("expired") || error.includes("auth")) && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setShowRelogin(true)}
+                className="h-7 text-xs border-destructive/50 text-destructive hover:bg-destructive/20 font-bold shrink-0"
+              >
+                <Lock className="h-3 w-3 mr-1" />
+                Sign In to Save (Keep Draft)
+              </Button>
+            )}
+          </div>
+
+          {showRelogin && (
+            <div className="rounded-lg border border-destructive/30 bg-background/80 p-3 pt-2 text-foreground space-y-2 mt-2">
+              <p className="text-xs text-muted-foreground">
+                Your session expired. Enter admin credentials to refresh your session without losing your article text:
+              </p>
+              <form onSubmit={handleReloginSubmit} className="flex flex-wrap items-center gap-2">
+                <Input
+                  type="email"
+                  placeholder="Admin Email"
+                  value={reloginEmail}
+                  onChange={(e) => setReloginEmail(e.target.value)}
+                  className="h-8 text-xs max-w-[220px]"
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={reloginPassword}
+                  onChange={(e) => setReloginPassword(e.target.value)}
+                  className="h-8 text-xs max-w-[200px]"
+                  required
+                />
+                <Button type="submit" size="sm" disabled={reloginLoading} className="h-8 text-xs">
+                  {reloginLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Lock className="h-3 w-3 mr-1" />}
+                  Sign In &amp; Refresh
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowRelogin(false)}
+                  className="h-8 text-xs"
+                >
+                  Cancel
+                </Button>
+                {reloginError && <p className="w-full text-xs text-destructive font-semibold">{reloginError}</p>}
+              </form>
+            </div>
+          )}
         </div>
       )}
 
@@ -3020,7 +3598,13 @@ export function BlogAdminPage({ defaultTab = "blogs" }: { defaultTab?: "blogs" |
     try {
       setPosts(await fetchAllPosts(activeToken));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load blogs");
+      if (err instanceof Error && (err.message.includes("Authentication required") || err.message.includes("401"))) {
+        clearStoredSession();
+        setToken("");
+        setError("Your admin session has expired. Please sign in again.");
+      } else {
+        setError(err instanceof Error ? err.message : "Could not load blogs");
+      }
     } finally {
       setLoading(false);
     }
@@ -3231,6 +3815,7 @@ export function BlogAdminPage({ defaultTab = "blogs" }: { defaultTab?: "blogs" |
                 <PostForm
                   selectedPost={selectedPost}
                   token={token}
+                  onRefreshToken={setToken}
                   onSaved={() => {
                     loadPosts();
                     setActiveTab("showcase");

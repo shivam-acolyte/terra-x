@@ -120,7 +120,7 @@ app.post("/api/auth/login", async (request, response, next) => {
     const { rows } = await pool.query("select id, email, password_hash from admin_users where email = $1", [email]);
     const admin = rows[0];
     if (!admin || !(await bcrypt.compare(password, admin.password_hash))) return response.status(401).json({ error: "Invalid email or password." });
-    const access_token = jwt.sign({ sub: admin.id, email: admin.email, role: "admin" }, jwtSecret, { expiresIn: "8h" });
+    const access_token = jwt.sign({ sub: admin.id, email: admin.email, role: "admin" }, jwtSecret, { expiresIn: "30d" });
     response.json({ access_token, user: { email: admin.email } });
   } catch (error) { next(error); }
 });
