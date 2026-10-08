@@ -69,6 +69,7 @@ import {
   Tag,
   Trash2,
   Undo2,
+  Unlink,
   Upload,
   User,
   UserCheck,
@@ -149,6 +150,84 @@ function ConfigMissing() {
   );
 }
 
+function parseMarkdownTables(text: string): string {
+  const lines = text.split(/\r?\n/);
+  const output: string[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const nextLine = i + 1 < lines.length ? lines[i + 1] : "";
+
+    const isHeaderRow = line.includes("|") && line.trim().length > 0;
+    const trimmedSep = nextLine.trim();
+    const isSeparatorRow =
+      trimmedSep.includes("|") &&
+      /^[|\s:-]+$/.test(trimmedSep) &&
+      trimmedSep
+        .replace(/^\|/, "")
+        .replace(/\|$/, "")
+        .split("|")
+        .some((c) => /^-{2,}$/.test(c.trim().replace(/^:/, "").replace(/:$/, "")));
+
+    if (isHeaderRow && isSeparatorRow) {
+      const tableLines: string[] = [line.trim(), trimmedSep];
+      i += 2;
+      while (i < lines.length && lines[i].includes("|") && lines[i].trim().length > 0) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+
+      const parseRow = (r: string): string[] => {
+        let clean = r.trim();
+        if (clean.startsWith("|")) clean = clean.slice(1);
+        if (clean.endsWith("|")) clean = clean.slice(0, -1);
+        return clean.split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, "|"));
+      };
+
+      const headerCells = parseRow(tableLines[0]);
+      const sepCells = parseRow(tableLines[1]);
+
+      const alignments = sepCells.map((cell) => {
+        const left = cell.startsWith(":");
+        const right = cell.endsWith(":");
+        if (left && right) return "text-center";
+        if (right) return "text-right";
+        return "text-left";
+      });
+
+      const thead = `<thead><tr class="bg-card border-b border-border">${headerCells
+        .map((h, idx) => {
+          const align = alignments[idx] || "text-left";
+          return `<th class="border border-border p-3.5 ${align} font-bold text-foreground text-sm bg-card/80">${h}</th>`;
+        })
+        .join("")}</tr></thead>`;
+
+      const dataRows = tableLines.slice(2).map(parseRow);
+      const tbody = `<tbody>${dataRows
+        .filter((row) => row.some((c) => c.length > 0))
+        .map((row) => {
+          const rowCells = row
+            .map((cell, idx) => {
+              const align = alignments[idx] || "text-left";
+              return `<td class="border border-border p-3.5 ${align} text-sm leading-relaxed text-foreground/90">${cell}</td>`;
+            })
+            .join("");
+          return `<tr class="border-b border-border/80 hover:bg-card/40 transition">${rowCells}</tr>`;
+        })
+        .join("")}</tbody>`;
+
+      const tableHtml = `\n\n<div class="overflow-x-auto my-6 rounded-xl border border-border bg-card/20 shadow-soft"><table class="w-full border-collapse text-sm">${thead}${tbody}</table></div>\n\n`;
+      output.push(tableHtml);
+    } else {
+      output.push(line);
+      i++;
+    }
+  }
+
+  return output.join("\n");
+}
+
 function renderBlogHtml(content: string): string {
   if (!content) return "";
 
@@ -180,8 +259,13 @@ function renderBlogHtml(content: string): string {
       '<blockquote class="border-l-4 border-electric pl-4 italic text-muted-foreground my-4">$1</blockquote>'
     );
 
-  // Normalize figures/blocks so they stand as their own blocks
-  formatted = formatted.replace(/\s*(<figure[\s\S]*?<\/figure>)\s*/g, "\n\n$1\n\n");
+  // Normalize figures/blocks and raw HTML tables so they stand as their own blocks
+  formatted = formatted
+    .replace(/\s*(<figure[\s\S]*?<\/figure>)\s*/g, "\n\n$1\n\n")
+    .replace(/\s*(<table[\s\S]*?<\/table>)\s*/gi, "\n\n$1\n\n");
+
+  // Parse Markdown tables into responsive HTML tables
+  formatted = parseMarkdownTables(formatted);
 
   // Split into paragraph/element blocks separated by blank lines
   const blocks = formatted.split(/\n\s*\n/);
@@ -834,21 +918,21 @@ function PostForm({
   const htmlFileInputRef = useRef<HTMLInputElement>(null);
   const visualEditorRef = useRef<HTMLDivElement>(null);
   const [contentUploading, setContentUploading] = useState(false);
+  const [activeLink, setActiveLink] = useState<{
+    href: string;
+    top: number;
+    left: number;
+    anchorEl: HTMLAnchorElement;
+  } | null>(null);
 
-  // Sync form.content into visual editor: automatically converts HTML code to clean text when in visual editor
+  // Sync form.content into visual editor when entering visual mode without stripping HTML code
   useEffect(() => {
-    if (editorTab === "visual") {
-      if (form.content && /<[a-z][\s\S]*>/i.test(form.content)) {
-        const clean = htmlToCleanTextOrMarkdown(form.content);
-        setField("content", clean);
-        if (visualEditorRef.current) {
-          visualEditorRef.current.innerHTML = renderBlogHtml(clean) || "<p><br></p>";
-        }
-      } else if (visualEditorRef.current) {
-        const rendered = renderBlogHtml(form.content);
-        if (visualEditorRef.current.innerHTML !== rendered) {
-          visualEditorRef.current.innerHTML = rendered || "<p><br></p>";
-        }
+    if (editorTab === "visual" && visualEditorRef.current) {
+      const htmlToRender = /<[a-z][\s\S]*>/i.test(form.content)
+        ? form.content
+        : renderBlogHtml(form.content);
+      if (visualEditorRef.current.innerHTML !== htmlToRender) {
+        visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
       }
     }
   }, [editorTab]);
@@ -864,6 +948,109 @@ function PostForm({
       visualEditorRef.current?.focus();
       document.execCommand(command, false, value);
       handleVisualEditorInput();
+    }
+  }
+
+  function handleRemoveLink() {
+    if (editorTab === "visual") {
+      visualEditorRef.current?.focus();
+      const sel = window.getSelection();
+      let anchorEl: HTMLAnchorElement | null = activeLink?.anchorEl || null;
+
+      if (!anchorEl && sel && sel.rangeCount > 0) {
+        let node: Node | null = sel.anchorNode;
+        while (node && node !== visualEditorRef.current) {
+          if (node.nodeName === "A") {
+            anchorEl = node as HTMLAnchorElement;
+            break;
+          }
+          node = node.parentNode;
+        }
+
+        if (!anchorEl) {
+          node = sel.focusNode;
+          while (node && node !== visualEditorRef.current) {
+            if (node.nodeName === "A") {
+              anchorEl = node as HTMLAnchorElement;
+              break;
+            }
+            node = node.parentNode;
+          }
+        }
+      }
+
+      if (anchorEl) {
+        const parent = anchorEl.parentNode;
+        while (anchorEl.firstChild) {
+          parent?.insertBefore(anchorEl.firstChild, anchorEl);
+        }
+        parent?.removeChild(anchorEl);
+        handleVisualEditorInput();
+        setActiveLink(null);
+        return;
+      }
+
+      document.execCommand("unlink", false);
+      handleVisualEditorInput();
+      setActiveLink(null);
+    } else if (editorTab === "html") {
+      const textarea = contentTextareaRef.current;
+      if (!textarea) return;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = form.content;
+      const selected = text.substring(start, end);
+
+      if (selected) {
+        const unlinked = selected
+          .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, "$1")
+          .replace(/\[([\s\S]*?)\]\([^)]+\)/g, "$1");
+
+        const newContent = text.substring(0, start) + unlinked + text.substring(end);
+        setField("content", newContent);
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start, start + unlinked.length);
+        }, 10);
+      } else {
+        const mdRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        let match: RegExpExecArray | null;
+        let replaced = false;
+        while ((match = mdRegex.exec(text)) !== null) {
+          const matchStart = match.index;
+          const matchEnd = match.index + match[0].length;
+          if (start >= matchStart && start <= matchEnd) {
+            const innerText = match[1];
+            const newContent = text.substring(0, matchStart) + innerText + text.substring(matchEnd);
+            setField("content", newContent);
+            setTimeout(() => {
+              textarea.focus();
+              textarea.setSelectionRange(matchStart, matchStart + innerText.length);
+            }, 10);
+            replaced = true;
+            break;
+          }
+        }
+
+        if (!replaced) {
+          const htmlRegex = /<a\b[^>]*>([\s\S]*?)<\/a>/gi;
+          while ((match = htmlRegex.exec(text)) !== null) {
+            const matchStart = match.index;
+            const matchEnd = match.index + match[0].length;
+            if (start >= matchStart && start <= matchEnd) {
+              const innerText = match[1];
+              const newContent = text.substring(0, matchStart) + innerText + text.substring(matchEnd);
+              setField("content", newContent);
+              setTimeout(() => {
+                textarea.focus();
+                textarea.setSelectionRange(matchStart, matchStart + innerText.length);
+              }, 10);
+              replaced = true;
+              break;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1949,19 +2136,18 @@ function PostForm({
             {/* Sub-bar: Mode Switcher (Visual Editor vs Add / Edit HTML) matching user's image */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-2">
               <div className="inline-flex items-center rounded-lg border border-border bg-muted/30 p-1 text-xs gap-1">
-                {/* Mode 1: Visual Editor - automatically views converted HTML code as clean text */}
+                {/* Mode 1: Visual Editor */}
                 <button
                   type="button"
                   onClick={() => {
                     setEditorTab("visual");
-                    if (form.content && /<[a-z][\s\S]*>/i.test(form.content)) {
-                      const clean = htmlToCleanTextOrMarkdown(form.content);
-                      setField("content", clean);
-                      if (visualEditorRef.current) {
-                        visualEditorRef.current.innerHTML = renderBlogHtml(clean) || "<p><br></p>";
+                    if (visualEditorRef.current) {
+                      const htmlToRender = /<[a-z][\s\S]*>/i.test(form.content)
+                        ? form.content
+                        : renderBlogHtml(form.content);
+                      if (visualEditorRef.current.innerHTML !== htmlToRender) {
+                        visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
                       }
-                    } else if (visualEditorRef.current) {
-                      visualEditorRef.current.innerHTML = renderBlogHtml(form.content) || "<p><br></p>";
                     }
                   }}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
@@ -1977,7 +2163,12 @@ function PostForm({
                 {/* Mode 2: Add / Edit HTML */}
                 <button
                   type="button"
-                  onClick={() => setEditorTab("html")}
+                  onClick={() => {
+                    if (visualEditorRef.current && editorTab === "visual") {
+                      setField("content", visualEditorRef.current.innerHTML);
+                    }
+                    setEditorTab("html");
+                  }}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
                     editorTab === "html"
                       ? "bg-card text-foreground shadow-sm border border-border/80 font-bold"
@@ -1994,7 +2185,12 @@ function PostForm({
                 {/* Mode 3: Live Preview Tab */}
                 <button
                   type="button"
-                  onClick={() => setEditorTab("preview")}
+                  onClick={() => {
+                    if (visualEditorRef.current && editorTab === "visual") {
+                      setField("content", visualEditorRef.current.innerHTML);
+                    }
+                    setEditorTab("preview");
+                  }}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                     editorTab === "preview"
                       ? "bg-primary text-primary-foreground font-bold"
@@ -2107,15 +2303,61 @@ function PostForm({
                       size="icon"
                       onClick={() => {
                         if (editorTab === "visual") {
-                          const url = prompt("Enter Link URL (https://...):");
-                          if (url) execVisualFormat("createLink", url);
+                          visualEditorRef.current?.focus();
+                          const sel = window.getSelection();
+                          let currentHref = "";
+                          let anchorEl: HTMLAnchorElement | null = activeLink?.anchorEl || null;
+
+                          if (!anchorEl && sel && sel.rangeCount > 0) {
+                            let node: Node | null = sel.anchorNode;
+                            while (node && node !== visualEditorRef.current) {
+                              if (node.nodeName === "A") {
+                                anchorEl = node as HTMLAnchorElement;
+                                break;
+                              }
+                              node = node.parentNode;
+                            }
+                          }
+
+                          if (anchorEl) {
+                            currentHref = anchorEl.getAttribute("href") || "";
+                          }
+
+                          const promptMsg = anchorEl
+                            ? "Edit Link URL (leave blank to remove hyperlink):"
+                            : "Enter Link URL (https://...):";
+
+                          const url = prompt(promptMsg, currentHref || "https://");
+                          if (url === null) return;
+
+                          const trimmed = url.trim();
+                          if (!trimmed || trimmed === "https://" || trimmed === "http://") {
+                            handleRemoveLink();
+                          } else {
+                            if (anchorEl) {
+                              anchorEl.setAttribute("href", trimmed);
+                              handleVisualEditorInput();
+                            } else {
+                              execVisualFormat("createLink", trimmed);
+                            }
+                          }
                         } else {
                           insertContent("[Link text](https://)");
                         }
                       }}
-                      title="Link"
+                      title="Insert or Edit Link"
                     >
                       <LinkIcon className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleRemoveLink}
+                      title="Remove Hyperlink (Unlink selected text or cursor)"
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Unlink className="h-4 w-4" />
                     </Button>
                     <Button
                       type="button"
@@ -2304,12 +2546,113 @@ function PostForm({
                   {/* Mode 1: Visual WYSIWYG Editor */}
                   {editorTab === "visual" && (
                     <div className="relative">
+                      {activeLink && (
+                        <div
+                          style={{ top: `${activeLink.top}px`, left: `${activeLink.left}px` }}
+                          className="absolute z-30 flex items-center gap-1.5 rounded-lg border border-border bg-card/95 p-1.5 shadow-xl backdrop-blur-md text-xs font-mono animate-in fade-in zoom-in-95 duration-150"
+                        >
+                          <a
+                            href={activeLink.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="max-w-[150px] truncate text-electric underline px-1.5 py-0.5 hover:text-electric/80 flex items-center gap-1"
+                            title={activeLink.href}
+                          >
+                            <ExternalLink className="h-3 w-3 shrink-0" />
+                            <span className="truncate">{activeLink.href}</span>
+                          </a>
+                          <div className="h-4 w-px bg-border" />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 text-xs"
+                            onClick={() => {
+                              const newUrl = prompt("Edit link URL (leave blank to remove):", activeLink.href);
+                              if (newUrl === null) return;
+                              const trimmed = newUrl.trim();
+                              if (!trimmed) {
+                                handleRemoveLink();
+                              } else {
+                                activeLink.anchorEl.setAttribute("href", trimmed);
+                                handleVisualEditorInput();
+                                setActiveLink({ ...activeLink, href: trimmed });
+                              }
+                            }}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="h-6 px-2 text-xs gap-1"
+                            onClick={handleRemoveLink}
+                            title="Remove hyperlink"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            Remove
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                            onClick={() => setActiveLink(null)}
+                            title="Close"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
                       <div
                         ref={visualEditorRef}
                         contentEditable
                         suppressContentEditableWarning
                         onInput={handleVisualEditorInput}
                         onBlur={handleVisualEditorInput}
+                        onClick={(e) => {
+                          const target = (e.target as HTMLElement).closest("a");
+                          if (target && visualEditorRef.current?.contains(target)) {
+                            e.preventDefault();
+                            const rect = target.getBoundingClientRect();
+                            const containerRect = visualEditorRef.current.parentElement?.getBoundingClientRect();
+                            if (containerRect) {
+                              setActiveLink({
+                                href: target.getAttribute("href") || "#",
+                                top: rect.bottom - containerRect.top + 6,
+                                left: Math.max(10, Math.min(rect.left - containerRect.left, containerRect.width - 260)),
+                                anchorEl: target,
+                              });
+                            }
+                          } else {
+                            if (activeLink) setActiveLink(null);
+                          }
+                        }}
+                        onKeyUp={() => {
+                          const sel = window.getSelection();
+                          if (sel && sel.rangeCount > 0) {
+                            let node: Node | null = sel.anchorNode;
+                            let anchor: HTMLAnchorElement | null = null;
+                            while (node && node !== visualEditorRef.current) {
+                              if (node.nodeName === "A") {
+                                anchor = node as HTMLAnchorElement;
+                                break;
+                              }
+                              node = node.parentNode;
+                            }
+                            if (anchor && visualEditorRef.current?.parentElement) {
+                              const rect = anchor.getBoundingClientRect();
+                              const containerRect = visualEditorRef.current.parentElement.getBoundingClientRect();
+                              setActiveLink({
+                                href: anchor.getAttribute("href") || "#",
+                                top: rect.bottom - containerRect.top + 6,
+                                left: Math.max(10, Math.min(rect.left - containerRect.left, containerRect.width - 260)),
+                                anchorEl: anchor,
+                              });
+                            }
+                          }
+                        }}
                         className="min-h-[420px] p-6 bg-background focus:outline-none prose prose-invert max-w-none text-base leading-relaxed text-foreground [&_h1]:text-3xl [&_h1]:font-black [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-xl [&_h3]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:mb-4 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_blockquote]:border-l-4 [&_blockquote]:border-electric [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_table]:w-full [&_table]:border [&_table]:border-border [&_table]:my-6 [&_th]:border [&_th]:border-border [&_th]:bg-card [&_th]:p-3 [&_th]:text-left [&_th]:font-bold [&_td]:border [&_td]:border-border [&_td]:p-3 [&_iframe]:w-full [&_iframe]:rounded-xl [&_iframe]:my-6 [&_img]:w-full [&_img]:max-h-[520px] [&_img]:object-cover [&_img]:rounded-2xl [&_img]:border [&_img]:border-border/80 [&_img]:shadow-soft [&_img]:my-6 [&_figure]:my-8 [&_figure]:overflow-hidden [&_figure]:rounded-2xl [&_figure]:border [&_figure]:border-border/80 [&_figure]:bg-card/60 [&_figure]:shadow-soft [&_figure_img]:my-0 [&_figure_img]:border-0 [&_figure_img]:rounded-none [&_figcaption]:border-t [&_figcaption]:border-border/60 [&_figcaption]:bg-card/90 [&_figcaption]:px-4 [&_figcaption]:py-2.5 [&_figcaption]:text-center [&_figcaption]:text-xs [&_figcaption]:font-mono [&_figcaption]:text-muted-foreground [&_a]:text-electric [&_a]:underline"
                         style={{ minHeight: "420px" }}
                       />
