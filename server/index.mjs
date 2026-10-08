@@ -139,7 +139,7 @@ app.get("/api/blog-posts/:slug", async (request, response, next) => {
       try {
         jwt.verify(token, jwtSecret);
         isAdmin = true;
-      } catch {}
+      } catch { }
     }
 
     const query = isAdmin

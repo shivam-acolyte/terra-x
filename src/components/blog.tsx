@@ -110,6 +110,39 @@ const emptyForm: BlogFormValues = {
   schema_markup: "",
 };
 
+function postToFormValues(post: BlogPost | null): BlogFormValues {
+  if (!post) return emptyForm;
+  return {
+    title: post.title || "",
+    slug: post.slug || "",
+    excerpt: post.excerpt || "",
+    content: post.content || "",
+    cover_image_url: post.cover_image_url || "",
+    mobile_image_url: post.mobile_image_url || "",
+    post_date: post.post_date || new Date().toISOString().slice(0, 10),
+    read_time: post.read_time || "5 min read",
+    image_alt_text: post.image_alt_text || "",
+    image_title: post.image_title || "",
+    meta_title: post.meta_title || post.title || "",
+    meta_description: post.meta_description || post.excerpt || "",
+    canonical_url: post.canonical_url || "",
+    author_name: post.author_name || "TERRA-X Team",
+    author_role: post.author_role || "",
+    author_bio: post.author_bio || "",
+    author_avatar_url: post.author_avatar_url || "",
+    author_social_url: post.author_social_url || "",
+    category: post.category || "Technology",
+    status: post.status || "draft",
+    tags: Array.isArray(post.tags) ? post.tags : [],
+    og_image_url: post.og_image_url || "",
+    meta_keywords: post.meta_keywords || "",
+    no_index: Boolean(post.no_index),
+    head_scripts: post.head_scripts || "",
+    body_scripts: post.body_scripts || "",
+    schema_markup: post.schema_markup || "",
+  };
+}
+
 function formatDate(value?: string | null) {
   if (!value) return "Draft";
   return new Intl.DateTimeFormat("en-IN", {
@@ -888,13 +921,14 @@ function PostForm({
 }: {
   selectedPost: BlogPost | null;
   token: string;
-  onSaved: () => void;
+  onSaved: (savedPost?: BlogPost) => void;
   onCancel: () => void;
   onRefreshToken?: (newToken: string) => void;
 }) {
-  const [form, setForm] = useState<BlogFormValues>(emptyForm);
+  const [form, setForm] = useState<BlogFormValues>(() => postToFormValues(selectedPost));
   const [formTab, setFormTab] = useState<"content" | "seo">("content");
   const [editorTab, setEditorTab] = useState<"visual" | "html" | "preview">("visual");
+  const [saveSuccess, setSaveSuccess] = useState<string>("");
   const [previousHtmlBackup, setPreviousHtmlBackup] = useState<string | null>(null);
   const [htmlActionMessage, setHtmlActionMessage] = useState<string>("");
   const [tagInput, setTagInput] = useState("");
@@ -917,6 +951,7 @@ function PostForm({
   const contentImageInputRef = useRef<HTMLInputElement>(null);
   const htmlFileInputRef = useRef<HTMLInputElement>(null);
   const visualEditorRef = useRef<HTMLDivElement>(null);
+  const isVisualTypingRef = useRef(false);
   const [contentUploading, setContentUploading] = useState(false);
   const [activeLink, setActiveLink] = useState<{
     href: string;
@@ -928,6 +963,10 @@ function PostForm({
   // Sync form.content into visual editor when entering visual mode without stripping HTML code
   useEffect(() => {
     if (editorTab === "visual" && visualEditorRef.current) {
+      if (isVisualTypingRef.current) {
+        isVisualTypingRef.current = false;
+        return;
+      }
       const htmlToRender = /<[a-z][\s\S]*>/i.test(form.content)
         ? form.content
         : renderBlogHtml(form.content);
@@ -935,12 +974,40 @@ function PostForm({
         visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
       }
     }
-  }, [editorTab]);
+  }, [editorTab, form.content]);
 
   function handleVisualEditorInput() {
     if (visualEditorRef.current) {
+      isVisualTypingRef.current = true;
       setField("content", visualEditorRef.current.innerHTML);
     }
+  }
+
+  function switchToVisualTab() {
+    isVisualTypingRef.current = false;
+    setEditorTab("visual");
+  }
+
+  function switchToHtmlTab() {
+    if (visualEditorRef.current && editorTab === "visual") {
+      const visualHtml = visualEditorRef.current.innerHTML;
+      const isVisualTrivial = !visualHtml || visualHtml === "<p><br></p>" || visualHtml.trim() === "";
+      if (!isVisualTrivial || !form.content) {
+        setField("content", visualHtml);
+      }
+    }
+    setEditorTab("html");
+  }
+
+  function switchToPreviewTab() {
+    if (visualEditorRef.current && editorTab === "visual") {
+      const visualHtml = visualEditorRef.current.innerHTML;
+      const isVisualTrivial = !visualHtml || visualHtml === "<p><br></p>" || visualHtml.trim() === "";
+      if (!isVisualTrivial || !form.content) {
+        setField("content", visualHtml);
+      }
+    }
+    setEditorTab("preview");
   }
 
   function execVisualFormat(command: string, value: string | undefined = undefined) {
@@ -1084,6 +1151,7 @@ function PostForm({
         const mainEl = doc.querySelector("article") || doc.querySelector("main") || doc.body;
         const bodyHtml = mainEl ? mainEl.innerHTML.trim() : rawHtml.trim();
 
+        isVisualTypingRef.current = false;
         setField("content", bodyHtml);
         if (visualEditorRef.current) {
           visualEditorRef.current.innerHTML = renderBlogHtml(bodyHtml);
@@ -1102,6 +1170,7 @@ function PostForm({
     if (!form.content || !form.content.trim()) return;
     setPreviousHtmlBackup(form.content);
     const converted = htmlToCleanTextOrMarkdown(form.content);
+    isVisualTypingRef.current = false;
     setField("content", converted);
     if (visualEditorRef.current) {
       visualEditorRef.current.innerHTML = renderBlogHtml(converted);
@@ -1112,6 +1181,7 @@ function PostForm({
 
   function handleUndoHtmlConversion() {
     if (previousHtmlBackup !== null) {
+      isVisualTypingRef.current = false;
       setField("content", previousHtmlBackup);
       if (visualEditorRef.current) {
         visualEditorRef.current.innerHTML = renderBlogHtml(previousHtmlBackup);
@@ -1140,40 +1210,15 @@ function PostForm({
   }
 
   useEffect(() => {
-    if (!selectedPost) {
-      setForm(emptyForm);
-      return;
+    const values = postToFormValues(selectedPost);
+    setForm(values);
+    isVisualTypingRef.current = false;
+    if (visualEditorRef.current) {
+      const htmlToRender = /<[a-z][\s\S]*>/i.test(values.content)
+        ? values.content
+        : renderBlogHtml(values.content);
+      visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
     }
-
-    setForm({
-      title: selectedPost.title,
-      slug: selectedPost.slug,
-      excerpt: selectedPost.excerpt,
-      content: selectedPost.content,
-      cover_image_url: selectedPost.cover_image_url || "",
-      mobile_image_url: selectedPost.mobile_image_url || "",
-      post_date: selectedPost.post_date || new Date().toISOString().slice(0, 10),
-      read_time: selectedPost.read_time || "5 min read",
-      image_alt_text: selectedPost.image_alt_text || "",
-      image_title: selectedPost.image_title || "",
-      meta_title: selectedPost.meta_title || selectedPost.title,
-      meta_description: selectedPost.meta_description || selectedPost.excerpt,
-      canonical_url: selectedPost.canonical_url || "",
-      author_name: selectedPost.author_name || "TERRA-X Team",
-      author_role: selectedPost.author_role || "",
-      author_bio: selectedPost.author_bio || "",
-      author_avatar_url: selectedPost.author_avatar_url || "",
-      author_social_url: selectedPost.author_social_url || "",
-      category: selectedPost.category || "Technology",
-      status: selectedPost.status || "draft",
-      tags: Array.isArray(selectedPost.tags) ? selectedPost.tags : [],
-      og_image_url: selectedPost.og_image_url || "",
-      meta_keywords: selectedPost.meta_keywords || "",
-      no_index: Boolean(selectedPost.no_index),
-      head_scripts: selectedPost.head_scripts || "",
-      body_scripts: selectedPost.body_scripts || "",
-      schema_markup: selectedPost.schema_markup || "",
-    });
   }, [selectedPost]);
 
   const previewSlug = useMemo(() => createSlug(form.slug || form.title), [form.slug, form.title]);
@@ -1209,8 +1254,8 @@ function PostForm({
     setDuplicating(true);
     setError("");
     try {
-      await duplicatePost(selectedPost.id, token);
-      onSaved();
+      const duplicated = await duplicatePost(selectedPost.id, token);
+      onSaved(duplicated);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to duplicate post");
     } finally {
@@ -1218,21 +1263,71 @@ function PostForm({
     }
   }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  async function savePostAction(statusOverride?: "draft" | "published") {
     setSaving(true);
     setError("");
+    setSaveSuccess("");
 
     try {
-      let finalForm = form;
+      let currentContent = form.content;
+      if (editorTab === "visual" && visualEditorRef.current) {
+        const visualHtml = visualEditorRef.current.innerHTML;
+        const isVisualTrivial = !visualHtml || visualHtml === "<p><br></p>" || visualHtml.trim() === "";
+        if (!isVisualTrivial || !currentContent) {
+          currentContent = visualHtml;
+          setField("content", currentContent);
+        }
+      }
+
+      const targetStatus = statusOverride || form.status || "draft";
+      let postToSave: BlogFormValues = {
+        ...form,
+        content: currentContent,
+        status: targetStatus,
+      };
+
+      if (!postToSave.title.trim()) {
+        setError("Article title is required.");
+        setSaving(false);
+        return;
+      }
+      if (!postToSave.excerpt.trim()) {
+        setError("Excerpt / summary is required.");
+        setSaving(false);
+        return;
+      }
+      if (!postToSave.content.trim() || postToSave.content === "<p><br></p>") {
+        setError("Article content (HTML / text) cannot be empty.");
+        setSaving(false);
+        return;
+      }
+
       if (hasBase64Images && token) {
-        const cleaned = await convertBase64ImagesInText(form.content);
-        finalForm = { ...form, content: cleaned };
+        const cleaned = await convertBase64ImagesInText(currentContent);
+        postToSave.content = cleaned;
         setField("content", cleaned);
       }
-      await upsertPost(finalForm, token, selectedPost?.id);
-      onSaved();
-      if (!selectedPost) setForm(emptyForm);
+
+      const saved = await upsertPost(postToSave, token, selectedPost?.id);
+
+      setForm(postToFormValues(saved));
+      isVisualTypingRef.current = false;
+      if (visualEditorRef.current) {
+        const htmlToRender = /<[a-z][\s\S]*>/i.test(saved.content)
+          ? saved.content
+          : renderBlogHtml(saved.content);
+        visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
+      }
+
+      const isPublished = targetStatus === "published";
+      setSaveSuccess(
+        isPublished
+          ? "🎉 Blog post published live! All content, HTML, and data are updated."
+          : "💾 Draft saved successfully! All content, HTML, and data are saved."
+      );
+      setTimeout(() => setSaveSuccess(""), 6000);
+
+      onSaved(saved);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Blog save failed";
       if (msg.includes("Authentication required") || msg.includes("401")) {
@@ -1244,6 +1339,11 @@ function PostForm({
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    await savePostAction(form.status);
   }
 
   async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -1354,6 +1454,7 @@ function PostForm({
 
     try {
       const parsed = await parseBlogPdf(file, token);
+      isVisualTypingRef.current = false;
       setForm((current) => ({
         ...current,
         title: parsed.title || current.title,
@@ -1365,6 +1466,9 @@ function PostForm({
         meta_title: parsed.meta_title || current.meta_title,
         meta_description: parsed.meta_description || current.meta_description,
       }));
+      if (visualEditorRef.current && parsed.content) {
+        visualEditorRef.current.innerHTML = renderBlogHtml(parsed.content);
+      }
       setPdfSuccess(`Auto-populated details from "${file.name}"!`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to extract details from PDF.");
@@ -1605,6 +1709,34 @@ function PostForm({
         </div>
       )}
 
+      {/* Success Notification Message */}
+      {saveSuccess && (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-400 shadow-sm animate-in fade-in duration-200">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+            <span className="font-semibold">{saveSuccess}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={`/blog/${form.slug || previewSlug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 rounded-md bg-emerald-500/20 px-2.5 py-1 text-xs font-bold text-emerald-300 hover:bg-emerald-500/30 transition"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              View Live
+            </a>
+            <button
+              type="button"
+              onClick={() => setSaveSuccess("")}
+              className="text-xs underline text-emerald-300/80 hover:text-white"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Form Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
         <div>
@@ -1679,9 +1811,29 @@ function PostForm({
             </button>
           </div>
 
-          <Button disabled={saving} size="sm" className="shadow-glow font-bold">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            {selectedPost ? "Update Post" : "Save Post"}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={saving}
+            onClick={() => savePostAction("draft")}
+            className="text-xs font-bold border-amber-500/40 text-amber-400 hover:bg-amber-500/10"
+            title="Save changes as Draft"
+          >
+            {saving && form.status === "draft" ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+            Save Draft
+          </Button>
+
+          <Button
+            type="button"
+            disabled={saving}
+            size="sm"
+            onClick={() => savePostAction("published")}
+            className="shadow-glow font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white"
+            title="Publish blog post live"
+          >
+            {saving && form.status === "published" ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+            {selectedPost ? "Update & Publish" : "Publish Post"}
           </Button>
         </div>
       </div>
@@ -2139,17 +2291,7 @@ function PostForm({
                 {/* Mode 1: Visual Editor */}
                 <button
                   type="button"
-                  onClick={() => {
-                    setEditorTab("visual");
-                    if (visualEditorRef.current) {
-                      const htmlToRender = /<[a-z][\s\S]*>/i.test(form.content)
-                        ? form.content
-                        : renderBlogHtml(form.content);
-                      if (visualEditorRef.current.innerHTML !== htmlToRender) {
-                        visualEditorRef.current.innerHTML = htmlToRender || "<p><br></p>";
-                      }
-                    }
-                  }}
+                  onClick={switchToVisualTab}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
                     editorTab === "visual"
                       ? "bg-card text-foreground shadow-sm border border-border/80 font-bold"
@@ -2163,12 +2305,7 @@ function PostForm({
                 {/* Mode 2: Add / Edit HTML */}
                 <button
                   type="button"
-                  onClick={() => {
-                    if (visualEditorRef.current && editorTab === "visual") {
-                      setField("content", visualEditorRef.current.innerHTML);
-                    }
-                    setEditorTab("html");
-                  }}
+                  onClick={switchToHtmlTab}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition ${
                     editorTab === "html"
                       ? "bg-card text-foreground shadow-sm border border-border/80 font-bold"
@@ -2185,12 +2322,7 @@ function PostForm({
                 {/* Mode 3: Live Preview Tab */}
                 <button
                   type="button"
-                  onClick={() => {
-                    if (visualEditorRef.current && editorTab === "visual") {
-                      setField("content", visualEditorRef.current.innerHTML);
-                    }
-                    setEditorTab("preview");
-                  }}
+                  onClick={switchToPreviewTab}
                   className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                     editorTab === "preview"
                       ? "bg-primary text-primary-foreground font-bold"
@@ -3000,9 +3132,28 @@ function PostForm({
               Cancel Edit
             </Button>
           )}
-          <Button disabled={saving} className="shadow-glow font-bold">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            {selectedPost ? "Update Blog Post" : "Save Blog Post"}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={saving}
+            onClick={() => savePostAction("draft")}
+            className="text-xs font-bold border-amber-500/40 text-amber-400 hover:bg-amber-500/10"
+            title="Save changes as Draft"
+          >
+            {saving && form.status === "draft" ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+            Save Draft
+          </Button>
+          <Button
+            type="button"
+            disabled={saving}
+            size="sm"
+            onClick={() => savePostAction("published")}
+            className="shadow-glow font-bold text-xs bg-emerald-600 hover:bg-emerald-500 text-white"
+            title="Publish blog post live"
+          >
+            {saving && form.status === "published" ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+            {selectedPost ? "Update & Publish" : "Publish Blog Post"}
           </Button>
         </div>
       </div>
@@ -4159,9 +4310,11 @@ export function BlogAdminPage({ defaultTab = "blogs" }: { defaultTab?: "blogs" |
                   selectedPost={selectedPost}
                   token={token}
                   onRefreshToken={setToken}
-                  onSaved={() => {
+                  onSaved={(savedPost) => {
                     loadPosts();
-                    setActiveTab("showcase");
+                    if (savedPost) {
+                      setSelectedPost(savedPost);
+                    }
                   }}
                   onCancel={() => setSelectedPost(null)}
                 />
