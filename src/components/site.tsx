@@ -148,60 +148,142 @@ export function TopBar() {
 }
 
 /* ------------------------------ HERO ------------------------------ */
+const heroStats = [
+  {
+    value: "2",
+    title: "Machine Platforms",
+    status: "TERRA-X STATUS",
+    valueColor: "text-[#c98606] dark:text-amber-400",
+    borderColor: "border-[#e5d5be]/80 hover:border-amber-400/80 hover:shadow-[0_12px_30px_-6px_rgba(217,119,6,0.16)]",
+    bgGradient: "bg-gradient-to-b from-white via-white to-[#fef8eb]/80 dark:from-card dark:via-card dark:to-card",
+    iconBg: "bg-gradient-to-br from-[#f5be38] via-[#e5a61f] to-[#c27b0c] shadow-[0_4px_12px_rgba(194,123,12,0.25)] ring-1 ring-black/5",
+    iconCheckColor: "text-stone-900",
+  },
+  {
+    value: "15+",
+    title: "Novel Features",
+    status: "TERRA-X STATUS",
+    valueColor: "text-[#0ea5e9] dark:text-cyan-400",
+    borderColor: "border-cyan-200/80 hover:border-cyan-400/80 hover:shadow-[0_12px_30px_-6px_rgba(6,182,212,0.18)]",
+    bgGradient: "bg-gradient-to-b from-white via-white to-[#f0fbfb]/80 dark:from-card dark:via-card dark:to-card",
+    iconBg: "bg-gradient-to-br from-[#06b6d4] to-[#0891b2] shadow-[0_4px_12px_rgba(6,182,212,0.25)] ring-1 ring-black/5",
+    iconCheckColor: "text-stone-900",
+  },
+  {
+    value: "3",
+    title: "Patent-Linked IP",
+    status: "TERRA-X STATUS",
+    valueColor: "text-[#8b5cf6] dark:text-purple-400",
+    borderColor: "border-purple-200/80 hover:border-purple-400/80 hover:shadow-[0_12px_30px_-6px_rgba(168,85,247,0.18)]",
+    bgGradient: "bg-gradient-to-b from-white via-white to-[#faf5ff]/80 dark:from-card dark:via-card dark:to-card",
+    iconBg: "bg-gradient-to-br from-[#a855f7] to-[#7c3aed] shadow-[0_4px_12px_rgba(124,58,237,0.25)] ring-1 ring-black/5",
+    iconCheckColor: "text-stone-900",
+  },
+  {
+    value: "2",
+    title: "IPs Granted",
+    status: "TERRA-X STATUS",
+    valueColor: "text-[#10b981] dark:text-emerald-400",
+    borderColor: "border-emerald-200/80 hover:border-emerald-400/80 hover:shadow-[0_12px_30px_-6px_rgba(16,185,129,0.18)]",
+    bgGradient: "bg-gradient-to-b from-white via-white to-[#ecfdf5]/80 dark:from-card dark:via-card dark:to-card",
+    iconBg: "bg-gradient-to-br from-[#10b981] to-[#059669] shadow-[0_4px_12px_rgba(5,150,105,0.25)] ring-1 ring-black/5",
+    iconCheckColor: "text-stone-900",
+  },
+];
+
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-24">
+    <section id="top" className="relative overflow-hidden pt-20 sm:pt-24">
       {/* Full-width banner slider */}
       <HeroBanner />
 
-      <div className="absolute inset-0 -z-10 bg-grid opacity-40" />
+      <div className="absolute inset-0 -z-10 bg-grid opacity-30" />
       <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
 
-      <div className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:py-24 lg:px-8">
+      <div className="relative mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:py-24 lg:px-8 text-center">
         <div className="flex flex-col items-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-3 py-1 text-xs font-medium uppercase tracking-widest text-electric">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-electric opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-electric" />
-            </span>
+          {/* Top Badge */}
+          <div className="mb-6 sm:mb-8 inline-flex items-center rounded-full border border-[#e2d5c3] bg-gradient-to-r from-[#fbf8f3]/90 via-[#faf5ec]/90 to-[#fbf8f3]/90 backdrop-blur-md px-3.5 py-1 sm:px-4 sm:py-1.5 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.22em] text-[#9a6427] shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-amber-300/80 hover:shadow-sm dark:border-border dark:bg-card/50 dark:text-primary">
             Deep-Tech Robotics · Made in India
           </div>
-          <h1 className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            Autonomous AI Excavators Built for the{" "}
-            <span className="gradient-text">Real World</span>
+
+          {/* Heading */}
+          <h1 className="text-3xl font-black leading-[1.14] sm:leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl text-foreground max-w-4xl">
+            Autonomous AI Excavators Built for
+            <span className="block mt-1 sm:mt-2">
+              the <span className="gradient-text">Real World</span>
+            </span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
+
+          {/* Subtitles */}
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg lg:text-xl text-muted-foreground font-normal leading-relaxed max-w-3xl">
             AI-powered autonomous excavators designed for agriculture, construction, rescue, and defense applications.
           </p>
-          <p className="mt-4 max-w-xl text-base text-muted-foreground/80">
+          <p className="mt-3 sm:mt-4 max-w-2xl text-xs sm:text-sm lg:text-base text-muted-foreground/80 leading-relaxed">
             TERRA-X is building next-generation heavy machinery that reduces human dependency, improves safety, and enables precision operations across land, farms, and challenging environments.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+
+          {/* Action Buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 w-full sm:w-auto px-2 sm:px-0">
             <Link
               to="/products"
-              className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 glow-electric"
+              className="w-full sm:w-auto group inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_4px_16px_rgba(202,138,4,0.3)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(202,138,4,0.45)] hover:-translate-y-0.5 active:translate-y-0 glow-electric"
             >
               Explore Our Machines
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
             <Link
               to="/technology"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card/50 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-electric hover:text-electric"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-border/80 bg-card/80 backdrop-blur-sm px-6 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-300 hover:border-amber-400/50 hover:bg-card hover:-translate-y-0.5 hover:shadow active:translate-y-0"
             >
               View Technology
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-md border border-accent/40 bg-accent/5 px-6 py-3 text-sm font-semibold text-accent transition hover:bg-accent/10"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-red-200/80 bg-red-50/60 backdrop-blur-sm px-6 py-3 text-sm font-semibold text-[#b91c1c] shadow-sm transition-all duration-300 hover:bg-red-50 hover:border-red-300 hover:-translate-y-0.5 active:translate-y-0 dark:border-accent/40 dark:bg-accent/10 dark:text-accent"
             >
               Contact Us
             </Link>
           </div>
 
-          <div className="mt-12 grid w-full max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
-            <Stat label="Machine Platforms" value="2" />
-            <Stat label="Novel Features" value="15+" />
-            <Stat label="Patent-Linked IP" value="2" />
+          {/* Metrics Grid */}
+          <div className="relative mt-10 sm:mt-12 lg:mt-14 w-full max-w-[840px] mx-auto">
+            {/* Subtle ambient spotlight */}
+            <div className="pointer-events-none absolute -bottom-4 left-1/2 -z-10 h-36 w-3/4 -translate-x-1/2 rounded-full bg-gradient-to-t from-primary/5 via-primary/2 to-transparent blur-2xl" />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4 w-full">
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.title}
+                  className={`group relative flex flex-col items-start rounded-xl sm:rounded-2xl border ${stat.borderColor} ${stat.bgGradient} p-3.5 sm:p-4 lg:p-5 text-left shadow-[0_2px_12px_-2px_rgba(0,0,0,0.04)] backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg`}
+                >
+                  {/* Squircle check badge */}
+                  <div
+                    className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl ${stat.iconBg} transition-transform duration-300 group-hover:scale-105`}
+                  >
+                    <Check className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${stat.iconCheckColor} stroke-[2.5]`} />
+                  </div>
+
+                  {/* Stat Number */}
+                  <div className={`mt-3 sm:mt-4 lg:mt-4.5 text-2xl sm:text-[26px] lg:text-[28px] font-bold tracking-tight leading-none ${stat.valueColor}`}>
+                    {stat.value}
+                  </div>
+
+                  {/* Gradient divider line */}
+                  <div className="my-2 sm:my-2.5 h-px w-full bg-gradient-to-r from-stone-200/90 via-stone-200/50 to-transparent dark:from-border/80 dark:via-border/30 dark:to-transparent" />
+
+                  {/* Title */}
+                  <div className="text-xs sm:text-[13px] font-bold text-foreground tracking-tight transition-colors leading-snug">
+                    {stat.title}
+                  </div>
+
+                  {/* Subtitle */}
+                  <div className="mt-0.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider sm:tracking-[0.16em] text-stone-400 dark:text-muted-foreground/80">
+                    {stat.status}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
